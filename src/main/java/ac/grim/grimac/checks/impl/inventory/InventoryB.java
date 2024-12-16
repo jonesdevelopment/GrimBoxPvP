@@ -17,7 +17,7 @@ public class InventoryB extends InventoryCheck implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
-        if (player.hasInventoryOpen && predictionComplete.isChecked()
+        if (player.hasInventoryOpen && !player.isFlying && predictionComplete.isChecked()
                 && !player.packetStateData.lastPacketWasTeleport
                 && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate) {
             final double squaredActualSpeed = player.actualMovement.getX() * player.actualMovement.getX()
@@ -25,7 +25,7 @@ public class InventoryB extends InventoryCheck implements PostPredictionCheck {
             final double movementSpeed = player.compensatedEntities.getSelf()
                     .getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
             final double squaredMovementSpeed = movementSpeed * movementSpeed;
-            if (!player.isFlying && squaredActualSpeed > squaredMovementSpeed) {
+            if (squaredActualSpeed > squaredMovementSpeed) {
                 final double difference = Math.abs(squaredActualSpeed - lastSquaredActualSpeed);
                 if (difference < 1e-7) {
                     if (flagAndAlert("difference=" + difference)) {
