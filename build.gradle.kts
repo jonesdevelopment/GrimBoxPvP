@@ -147,7 +147,7 @@ bukkit {
 
         register("grim.verbose") {
             description = "Receive verbose alerts for violations. Requires grim.alerts"
-            default = Permission.Default.OP
+            default = Permission.Default.FALSE
         }
 
         register("grim.verbose.enable-on-join") {
