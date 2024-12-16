@@ -13,6 +13,7 @@ import ac.grim.grimac.checks.impl.exploit.ExploitA;
 import ac.grim.grimac.checks.impl.exploit.ExploitB;
 import ac.grim.grimac.checks.impl.exploit.ExploitC;
 import ac.grim.grimac.checks.impl.groundspoof.NoFallA;
+import ac.grim.grimac.checks.impl.inventory.*;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
 import ac.grim.grimac.checks.impl.misc.FastBreak;
 import ac.grim.grimac.checks.impl.misc.GhostBlockMitigation;
@@ -102,6 +103,10 @@ public class CheckManager {
                 .put(BadPacketsU.class, new BadPacketsU(player))
                 .put(BadPacketsW.class, new BadPacketsW(player))
                 .put(BadPacketsY.class, new BadPacketsY(player))
+                .put(InventoryC.class, new InventoryC(player))
+                .put(InventoryD.class, new InventoryD(player))
+                .put(InventoryE.class, new InventoryE(player))
+                .put(InventoryF.class, new InventoryF(player))
                 .put(MultiActionsA.class, new MultiActionsA(player))
                 .put(MultiActionsB.class, new MultiActionsB(player))
                 .put(MultiActionsC.class, new MultiActionsC(player))
@@ -137,6 +142,8 @@ public class CheckManager {
                 .put(SuperDebug.class, new SuperDebug(player))
                 .put(DebugHandler.class, new DebugHandler(player))
                 .put(EntityControl.class, new EntityControl(player))
+                .put(InventoryA.class, new InventoryA(player))
+                .put(InventoryB.class, new InventoryB(player))
                 .put(NoSlowA.class, new NoSlowA(player))
                 .put(NoSlowC.class, new NoSlowC(player))
                 .put(NoSlowD.class, new NoSlowD(player))
