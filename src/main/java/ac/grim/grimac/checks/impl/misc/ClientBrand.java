@@ -13,7 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class ClientBrand extends Check implements PacketCheck {
-    String brand = "vanilla";
+    String brand = "unresolved";
     boolean hasBrand = false;
 
     public ClientBrand(GrimPlayer player) {
