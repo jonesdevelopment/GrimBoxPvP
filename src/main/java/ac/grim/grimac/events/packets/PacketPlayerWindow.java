@@ -65,10 +65,12 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
             if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9)
                     && player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8)) {
                 handleInventoryOpen(player);
+                player.isCarryingInventoryItem = true;
             }
 
             if (player.getClientVersion().isNewerThan(ClientVersion.V_1_8)) {
                 handleInventoryOpen(player);
+                player.isCarryingInventoryItem = true;
             }
         }
 
@@ -135,6 +137,7 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
 
     private void handleInventoryClose(GrimPlayer player, InventoryDesyncStatus desyncStatus) {
         player.hasInventoryOpen = false;
+        player.isCarryingInventoryItem = false;
         player.inventoryDesyncStatus = desyncStatus;
     }
 

@@ -19,7 +19,8 @@ public class InventoryE extends InventoryCheck implements PacketCheck {
 
         if (event.getPacketType().equals(PacketType.Play.Client.PLAYER_ROTATION)
             || event.getPacketType().equals(PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION)) {
-            if (player.hasInventoryOpen
+            if (player.isCarryingInventoryItem
+                    && !player.skippedTickInActualMovement
                     && !player.packetStateData.lastPacketWasTeleport
                     && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate
                     && flagAndAlert()) {
