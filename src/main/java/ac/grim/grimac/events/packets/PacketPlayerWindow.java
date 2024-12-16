@@ -130,10 +130,6 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
     }
 
     private void handleInventoryOpen(GrimPlayer player) {
-        if (!player.hasInventoryOpen) {
-            player.lastInventoryOpen = System.currentTimeMillis();
-        }
-
         player.hasInventoryOpen = true;
     }
 
