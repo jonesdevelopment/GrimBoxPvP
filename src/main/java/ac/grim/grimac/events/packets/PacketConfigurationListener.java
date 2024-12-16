@@ -25,7 +25,7 @@ public class PacketConfigurationListener extends PacketListenerAbstract {
             String channelName = wrapper.getChannelName();
             byte[] data = wrapper.getData();
             if (channelName.equalsIgnoreCase("minecraft:brand") || channelName.equals("MC|Brand")) {
-                player.checkManager.getPacketCheck(ClientBrand.class).handle(channelName, data);
+                player.checkManager.getPacketCheck(ClientBrand.class).handle(data);
             }
         }
     }
