@@ -21,13 +21,12 @@ public class NoSlowB extends Check implements PacketCheck {
             if (player.canFly) return;
 
             if (player.food < 6.0F && player.isSprinting) {
-                if (flag()) {
+                if (flagAndAlert()) {
                     // Cancel the packet
                     if (shouldModifyPackets()) {
                         event.setCancelled(true);
                         player.onPacketCancel();
                     }
-                    alert("");
                     player.getSetbackTeleportUtil().executeNonSimulatingSetback();
                 }
             } else {
