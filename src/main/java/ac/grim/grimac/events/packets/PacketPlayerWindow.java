@@ -22,7 +22,6 @@ import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientClientStatus;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientClientStatus.Action;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerOpenWindow;
 
 public class PacketPlayerWindow extends PacketListenerAbstract {
 
@@ -65,12 +64,10 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
             if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9)
                     && player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8)) {
                 handleInventoryOpen(player);
-                player.isCarryingInventoryItem = true;
             }
 
             if (player.getClientVersion().isNewerThan(ClientVersion.V_1_8)) {
                 handleInventoryOpen(player);
-                player.isCarryingInventoryItem = true;
             }
         }
 
@@ -92,34 +89,6 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
 
             player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(),
                     () -> handleInventoryClose(player, InventoryDesyncStatus.NOT_DESYNCED));
-        } else if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
-            WrapperPlayServerOpenWindow wrapper = new WrapperPlayServerOpenWindow(event);
-
-            GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
-            if (player == null) return;
-
-            player.sendTransaction();
-
-            String legacyType = wrapper.getLegacyType();
-            int modernType = wrapper.getType();
-            InventoryDesyncStatus inventoryDesyncStatus = getContainerDesyncStatus(player, legacyType, modernType);
-
-            player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(),
-                    () -> {
-                        if (inventoryDesyncStatus == InventoryDesyncStatus.NOT_DESYNCED) {
-                            handleInventoryOpen(player);
-                        } else {
-                            handleInventoryClose(player, inventoryDesyncStatus);
-                        }
-                    });
-        } else if (event.getPacketType() == PacketType.Play.Server.OPEN_HORSE_WINDOW) {
-            GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
-            if (player == null) return;
-
-            player.sendTransaction();
-
-            player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(),
-                    () -> handleInventoryOpen(player));
         } else if (event.getPacketType() == PacketType.Play.Server.CLOSE_WINDOW) {
             GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
             if (player == null) return;
@@ -137,22 +106,7 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
 
     private void handleInventoryClose(GrimPlayer player, InventoryDesyncStatus desyncStatus) {
         player.hasInventoryOpen = false;
-        player.isCarryingInventoryItem = false;
         player.inventoryDesyncStatus = desyncStatus;
-    }
-
-    public InventoryDesyncStatus getContainerDesyncStatus(GrimPlayer player, String legacyType, int modernType) {
-        // Closing beacon with the cross button cause desync in 1.7-1.8
-        if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8) &&
-                ("minecraft:beacon".equals(legacyType) || modernType == 8)) {
-            return player.inventoryDesyncStatus = InventoryDesyncStatus.BEACON;
-        }
-
-        if (isNearNetherPortal(player)) {
-            return player.inventoryDesyncStatus = InventoryDesyncStatus.NETHER_PORTAL;
-        }
-
-        return player.inventoryDesyncStatus = InventoryDesyncStatus.NOT_DESYNCED;
     }
 
     public boolean isNearNetherPortal(GrimPlayer player) {

@@ -215,7 +215,6 @@ public class GrimPlayer implements GrimUser {
 
     public int totalFlyingPacketsSent;
     public boolean hasInventoryOpen;
-    public boolean isCarryingInventoryItem;
     public InventoryDesyncStatus inventoryDesyncStatus;
     public Queue<BlockPlaceSnapshot> placeUseItemPackets = new LinkedBlockingQueue<>();
     // This variable is for support with test servers that want to be able to disable grim
