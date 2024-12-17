@@ -7,7 +7,7 @@ import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 
-@CheckData(name = "InventoryB", decay = 0.01)
+@CheckData(name = "InventoryB", decay = 0.01, setback = 0)
 public class InventoryB extends InventoryCheck implements PostPredictionCheck {
     public InventoryB(final GrimPlayer player) {
         super(player);
@@ -29,7 +29,9 @@ public class InventoryB extends InventoryCheck implements PostPredictionCheck {
                 final double difference = Math.abs(squaredActualSpeed - lastSquaredActualSpeed);
                 if (difference < 1e-7) {
                     if (flagAndAlert("difference=" + difference)) {
-                        closeInventory();
+                        if (setbackIfAboveSetbackVL()) {
+                            closeInventory();
+                        }
                     }
                 } else {
                     reward();

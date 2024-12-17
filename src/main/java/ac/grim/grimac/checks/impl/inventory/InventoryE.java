@@ -7,7 +7,7 @@ import ac.grim.grimac.player.GrimPlayer;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 
-@CheckData(name = "InventoryE")
+@CheckData(name = "InventoryE", setback = 1)
 public class InventoryE extends InventoryCheck implements PacketCheck {
     public InventoryE(final GrimPlayer player) {
         super(player);
@@ -24,7 +24,9 @@ public class InventoryE extends InventoryCheck implements PacketCheck {
                     && !player.packetStateData.lastPacketWasTeleport
                     && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate
                     && flagAndAlert()) {
-                closeInventory();
+                if (setbackIfAboveSetbackVL()) {
+                    closeInventory();
+                }
             }
         }
     }
