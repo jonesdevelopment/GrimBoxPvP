@@ -16,7 +16,6 @@
  */
 
 package ac.grim.grimac.checks.type;
-import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.data.packetentity.PacketEntitySelf;
 import com.github.retrooper.packetevents.PacketEvents;
