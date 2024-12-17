@@ -16,12 +16,17 @@
  */
 
 package ac.grim.grimac.checks.type;
-
+import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.utils.data.packetentity.PacketEntitySelf;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.player.ClientVersion;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientClientStatus;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientCloseWindow;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerCloseWindow;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
@@ -31,6 +36,7 @@ public class InventoryCheck extends BlockPlaceCheck implements PacketCheck {
 
     protected long closeTransaction = NONE;
     protected int closePacketsToSkip;
+    protected boolean hasInventoryOpen;
 
     public InventoryCheck(GrimPlayer player) {
         super(player);
@@ -39,18 +45,41 @@ public class InventoryCheck extends BlockPlaceCheck implements PacketCheck {
     @Override
     @MustBeInvokedByOverriders
     public void onPacketReceive(final PacketReceiveEvent event) {
-        if (event.getPacketType() == PacketType.Play.Client.CLICK_WINDOW) {
+        if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType()) && !event.isCancelled()) {
+            GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
+            if (player == null) return;
+
+            if (player.hasInventoryOpen && isNearNetherPortal(player)) {
+                player.hasInventoryOpen = false;
+            }
+        } else if (event.getPacketType() == PacketType.Play.Client.CLIENT_STATUS) {
+            WrapperPlayClientClientStatus wrapper = new WrapperPlayClientClientStatus(event);
+            if (wrapper.getAction() == WrapperPlayClientClientStatus.Action.OPEN_INVENTORY_ACHIEVEMENT) {
+                hasInventoryOpen = true;
+            }
+        } else if (event.getPacketType() == PacketType.Play.Client.CLICK_WINDOW) {
             // Disallow any clicks if inventory is closing
             if (closeTransaction != NONE && shouldModifyPackets()) {
                 event.setCancelled(true);
                 player.onPacketCancel();
                 player.getInventory().needResend = true;
+            } else {
+                hasInventoryOpen = true;
             }
         } else if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
             // Players with high ping can close inventory faster than send transaction back
             if (closeTransaction != NONE && closePacketsToSkip-- <= 0) {
                 closeTransaction = NONE;
             }
+            hasInventoryOpen = false;
+        }
+    }
+
+    @Override
+    public void onPacketSend(PacketSendEvent event) {
+        if (event.getPacketType().equals(PacketType.Play.Server.RESPAWN)
+                || event.getPacketType().equals(PacketType.Play.Server.CLOSE_WINDOW)) {
+            hasInventoryOpen = false;
         }
     }
 
@@ -80,5 +109,17 @@ public class InventoryCheck extends BlockPlaceCheck implements PacketCheck {
         });
 
         player.user.flushPackets();
+    }
+
+    private boolean isNearNetherPortal(GrimPlayer player) {
+        // Going inside nether portal with opened inventory cause desync, fixed in 1.12.2
+        if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_12_1) &&
+                player.pointThreeEstimator.isNearNetherPortal) {
+            PacketEntitySelf playerEntity = player.compensatedEntities.getSelf();
+            // Client ignores nether portal if the player has passengers or is riding an entity
+            return !playerEntity.inVehicle() && playerEntity.passengers.isEmpty();
+        }
+
+        return false;
     }
 }
