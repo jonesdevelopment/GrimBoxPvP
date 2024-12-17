@@ -46,11 +46,8 @@ public class InventoryCheck extends BlockPlaceCheck implements PacketCheck {
     @MustBeInvokedByOverriders
     public void onPacketReceive(final PacketReceiveEvent event) {
         if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType()) && !event.isCancelled()) {
-            GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
-            if (player == null) return;
-
-            if (player.hasInventoryOpen && isNearNetherPortal(player)) {
-                player.hasInventoryOpen = false;
+            if (hasInventoryOpen && isNearNetherPortal(player)) {
+                hasInventoryOpen = false;
             }
         } else if (event.getPacketType() == PacketType.Play.Client.CLIENT_STATUS) {
             WrapperPlayClientClientStatus wrapper = new WrapperPlayClientClientStatus(event);

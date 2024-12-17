@@ -21,7 +21,7 @@ public class InventoryF extends InventoryCheck implements PacketCheck {
         super.onPacketReceive(event);
 
         if (event.getPacketType().equals(PacketType.Play.Client.HELD_ITEM_CHANGE)) {
-            if (player.hasInventoryOpen) {
+            if (hasInventoryOpen) {
                 if (lastTransaction < player.lastTransactionReceived.get() && flagAndAlert()) {
                     if (shouldModifyPackets()) {
                         event.setCancelled(true);

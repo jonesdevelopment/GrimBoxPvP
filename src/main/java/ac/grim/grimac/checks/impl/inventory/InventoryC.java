@@ -14,7 +14,7 @@ public class InventoryC extends InventoryCheck implements PacketCheck {
 
     @Override
     public void onBlockPlace(final BlockPlace place) {
-        if (player.hasInventoryOpen) {
+        if (hasInventoryOpen) {
             if (flagAndAlert()) {
                 if (shouldModifyPackets()) {
                     place.resync();

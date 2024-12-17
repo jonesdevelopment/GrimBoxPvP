@@ -37,7 +37,7 @@ public class InventoryD extends InventoryCheck implements PacketCheck {
     }
 
     private void handleAction(PacketReceiveEvent event) {
-        if (player.hasInventoryOpen && flagAndAlert("type=" + event.getPacketType())) {
+        if (hasInventoryOpen && flagAndAlert("type=" + event.getPacketType())) {
             if (shouldModifyPackets()) {
                 event.setCancelled(true);
                 player.onPacketCancel();
