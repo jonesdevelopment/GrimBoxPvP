@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class PacketEntityCamel extends PacketEntityHorse {
 
-    public boolean dashing = false; //TODO: handle camel dashing
+    public boolean dashing = false;
 
     public PacketEntityCamel(GrimPlayer player, UUID uuid, EntityType type, double x, double y, double z, float xRot) {
         super(player, uuid, type, x, y, z, xRot);

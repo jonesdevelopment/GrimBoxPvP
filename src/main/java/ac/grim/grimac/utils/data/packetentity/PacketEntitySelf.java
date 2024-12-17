@@ -47,7 +47,7 @@ public class PacketEntitySelf extends PacketEntity {
             setAttribute(Attributes.STEP_HEIGHT, 0.5f);
         }
 
-        getAttribute(Attributes.SCALE).get().withSetRewriter((oldValue, newValue) -> {
+        getAttribute(Attributes.SCALE).orElseThrow().withSetRewriter((oldValue, newValue) -> {
             if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_20_5) || (newValue).equals(oldValue)) {
                 return oldValue;
             } else {

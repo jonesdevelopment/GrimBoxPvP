@@ -147,7 +147,7 @@ public class PlayerBaseTick {
         // Pre-1.17 clients don't have powder snow and therefore don't desync
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_16_4)) return;
 
-        final ValuedAttribute playerSpeed = player.compensatedEntities.getSelf().getAttribute(Attributes.MOVEMENT_SPEED).get();
+        final ValuedAttribute playerSpeed = player.compensatedEntities.getSelf().getAttribute(Attributes.MOVEMENT_SPEED).orElseThrow();
 
         // Might be null after respawn?
         final Optional<WrapperPlayServerUpdateAttributes.Property> property = playerSpeed.property();

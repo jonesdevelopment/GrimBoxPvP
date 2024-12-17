@@ -56,6 +56,7 @@ repositories {
     maven("https://repo.codemc.io/repository/maven-releases/") // PacketEvents
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // placeholderapi
     mavenCentral()
     // FastUtil, Discord-Webhooks
 }
@@ -71,11 +72,14 @@ dependencies {
     // Used for local testing: implementation("ac.grim.grimac:GRIMAPI:1.0")
     implementation("com.github.grimanticheat:grimapi:fc5634e444")
 
+    implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
+
     implementation("org.jetbrains:annotations:24.1.0")
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     compileOnly("com.viaversion:viaversion-api:5.0.4-SNAPSHOT")
-    //
+    compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("io.netty:netty-all:4.1.85.Final")
 }
 
@@ -96,7 +100,8 @@ bukkit {
         "ViaRewind",
         "Geyser-Spigot",
         "floodgate",
-        "FastLogin"
+        "FastLogin",
+        "PlaceholderAPI",
     )
 
     permissions {
