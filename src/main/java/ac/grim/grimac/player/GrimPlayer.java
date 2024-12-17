@@ -16,7 +16,6 @@ import ac.grim.grimac.predictionengine.UncertaintyHandler;
 import ac.grim.grimac.utils.anticheat.LogUtil;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.*;
-import ac.grim.grimac.utils.inventory.InventoryDesyncStatus;
 import ac.grim.grimac.utils.data.packetentity.PacketEntity;
 import ac.grim.grimac.utils.data.packetentity.PacketEntitySelf;
 import ac.grim.grimac.utils.data.tags.SyncedTags;
@@ -215,7 +214,6 @@ public class GrimPlayer implements GrimUser {
 
     public int totalFlyingPacketsSent;
     public boolean hasInventoryOpen;
-    public InventoryDesyncStatus inventoryDesyncStatus;
     public Queue<BlockPlaceSnapshot> placeUseItemPackets = new LinkedBlockingQueue<>();
     // This variable is for support with test servers that want to be able to disable grim
     // Grim disabler 2022 still working!
