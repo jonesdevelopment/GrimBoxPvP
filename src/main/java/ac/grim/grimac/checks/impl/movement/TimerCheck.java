@@ -74,7 +74,7 @@ public class TimerCheck extends Check implements PacketCheck {
 
     public void doCheck(final PacketReceiveEvent event) {
         if (timerBalanceRealTime > System.nanoTime()) {
-            if (flag()) {
+            if (flagAndAlert()) {
                 // Cancel the packet
                 // Only cancel if not an adjustment setback
                 if (shouldModifyPackets()) {
@@ -83,8 +83,6 @@ public class TimerCheck extends Check implements PacketCheck {
                 }
 
                 if (isAboveSetbackVl()) player.getSetbackTeleportUtil().executeNonSimulatingSetback();
-
-                alert("");
             }
 
             // Reset the violation by 1 movement
