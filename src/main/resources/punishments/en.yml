@@ -34,6 +34,7 @@ Punishments:
     remove-violations-after: 300
     checks:
       - "BadPackets"
+      - "!BadPacketsR"
       - "Crash"
     commands:
       - "1:1 [alert]"
@@ -59,7 +60,7 @@ Punishments:
       - "NoSlow"
       - "MultiActions"
       - "Place"
-      - "FastBreak"
+      - "!FastBreak"
       - "TransactionOrder"
       - "Post"
       - "Timer"
