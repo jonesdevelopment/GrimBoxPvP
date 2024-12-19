@@ -2,6 +2,7 @@ package ac.grim.grimac.utils.latency;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.utils.change.BlockModification;
 import ac.grim.grimac.utils.chunks.Column;
 import ac.grim.grimac.utils.collisions.CollisionData;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
@@ -139,8 +140,16 @@ public class CompensatedWorld {
     private void handleAck(Vector3i vector3i, int originalBlockId, Vector3d playerPosition) {
         // If we need to change the world block state
         if (getWrappedBlockStateAt(vector3i).getGlobalId() != originalBlockId) {
+            player.blockHistory.add(
+                    new BlockModification(
+                            player.compensatedWorld.getWrappedBlockStateAt(vector3i),
+                            WrappedBlockState.getByGlobalId(originalBlockId),
+                            vector3i,
+                            GrimAPI.INSTANCE.getTickManager().currentTick,
+                            BlockModification.Cause.HANDLE_NETTY_SYNC_TRANSACTION
+                    )
+            );
             updateBlock(vector3i.getX(), vector3i.getY(), vector3i.getZ(), originalBlockId);
-
             WrappedBlockState state = WrappedBlockState.getByGlobalId(blockVersion, originalBlockId);
 
             // The player will teleport themselves if they get stuck in the reverted block

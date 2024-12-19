@@ -5,7 +5,6 @@ import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.api.events.FlagEvent;
 import ac.grim.grimac.player.GrimPlayer;
-import ac.grim.grimac.utils.common.ConfigReloadObserver;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
@@ -17,7 +16,7 @@ import org.bukkit.Bukkit;
 
 // Class from https://github.com/Tecnio/AntiCheatBase/blob/master/src/main/java/me/tecnio/anticheat/check/Check.java
 @Getter
-public class Check implements AbstractCheck, ConfigReloadObserver {
+public class Check extends GrimProcessor implements AbstractCheck {
     protected final GrimPlayer player;
 
     public double violations;
@@ -184,11 +183,6 @@ public class Check implements AbstractCheck, ConfigReloadObserver {
         }
 
         return isFlying(packetType);
-    }
-
-    @Override
-    public void reload() {
-        reload(GrimAPI.INSTANCE.getConfigManager().getConfig());
     }
 
 }
