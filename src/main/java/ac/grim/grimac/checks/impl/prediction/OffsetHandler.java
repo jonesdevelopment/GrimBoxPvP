@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@CheckData(name = "Simulation", configName = "Simulation", decay = 0.02)
+@CheckData(name = "Simulation", decay = 0.02)
 public class OffsetHandler extends Check implements PostPredictionCheck {
     // Config
     double setbackDecayMultiplier;
