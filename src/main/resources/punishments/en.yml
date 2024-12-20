@@ -52,7 +52,7 @@ Punishments:
       - "Inventory"
     commands:
       - "1:1 [alert]"
-      - "5:5 minecraft:kick %player% Disconnected"
+      - "10:10 minecraft:kick %player% Disconnected"
   Misc:
     remove-violations-after: 300
     checks:
