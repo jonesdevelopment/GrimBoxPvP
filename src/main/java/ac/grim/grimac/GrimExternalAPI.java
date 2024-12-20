@@ -212,7 +212,7 @@ public class GrimExternalAPI implements GrimAbstractAPI, ConfigReloadObserver, I
         variableReplacements.putIfAbsent("%tps%", user -> String.format("%.2f", SpigotReflectionUtil.getTPS()));
         variableReplacements.putIfAbsent("%version%", GrimUser::getVersionName);
         // static variables
-        staticReplacements.putIfAbsent("%prefix%", ChatColor.translateAlternateColorCodes('&', GrimAPI.INSTANCE.getConfigManager().getPrefix()));
+        staticReplacements.put("%prefix%", ChatColor.translateAlternateColorCodes('&', GrimAPI.INSTANCE.getConfigManager().getPrefix()));
         staticReplacements.putIfAbsent("%grim_version%", getGrimVersion());
     }
 

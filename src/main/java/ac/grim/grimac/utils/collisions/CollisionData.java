@@ -544,14 +544,12 @@ public enum CollisionData {
 
     SNOW((player, version, data, x, y, z) -> {
         if (data.getLayers() == 1 && version.isNewerThanOrEquals(ClientVersion.V_1_13)) {
-            // Via doesn't touch this
-            if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_13)) {
-                return NoCollisionBox.INSTANCE;
-            }
             // Handle viaversion mapping
-            if (ViaVersionUtil.isAvailable() && Via.getConfig().isSnowCollisionFix()) {
+            if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_13) && ViaVersionUtil.isAvailable() && Via.getConfig().isSnowCollisionFix()) {
                 data = data.clone();
                 data.setLayers(2);
+            } else {
+                return NoCollisionBox.INSTANCE;
             }
         }
 
@@ -591,12 +589,19 @@ public enum CollisionData {
         return new SimpleCollisionBox(0.0F, 0.0F, 0.0F, 1.0F, 0.0625F, 1.0F, false);
     }, BlockTags.WOOL_CARPETS.getStates().toArray(new StateType[0])),
 
-    MOSS_CARPET((player, version, data, x, y, z) -> {
-        if (version.isOlderThanOrEquals(ClientVersion.V_1_7_10))
-            return new SimpleCollisionBox(0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, false);
+    MOSS_CARPET(CARPET.dynamic, StateTypes.MOSS_CARPET),
+
+    PALE_MOSS_CARPET((player, version, data, x, y, z) -> {
+        if (!data.isBottom()) {
+            return NoCollisionBox.INSTANCE;
+        }
+
+        if (version.isOlderThan(ClientVersion.V_1_21_2)) {
+            return MOSS_CARPET.dynamic.fetch(player, version, data, x, y, z);
+        }
 
         return new SimpleCollisionBox(0.0F, 0.0F, 0.0F, 1.0F, 0.0625F, 1.0F, false);
-    }, StateTypes.MOSS_CARPET),
+    }, StateTypes.PALE_MOSS_CARPET),
 
     DAYLIGHT(new SimpleCollisionBox(0.0F, 0.0F, 0.0F, 1.0F, 0.375, 1.0F, false),
             StateTypes.DAYLIGHT_DETECTOR),
@@ -1139,7 +1144,7 @@ public enum CollisionData {
     // Would pre-computing all states be worth the memory cost? I doubt it
     public static CollisionData getData(StateType state) { // TODO: Find a better hack for lava and scaffolding
         // What the fuck mojang, why put noCollision() and then give PITCHER_CROP collision?
-        return state.isSolid() || state == StateTypes.LAVA || state == StateTypes.SCAFFOLDING || state == StateTypes.PITCHER_CROP || state == StateTypes.HEAVY_CORE || BlockTags.WALL_HANGING_SIGNS.contains(state) ? rawLookupMap.getOrDefault(state, DEFAULT) : NO_COLLISION;
+        return state.isSolid() || state == StateTypes.LAVA || state == StateTypes.SCAFFOLDING || state == StateTypes.PITCHER_CROP || state == StateTypes.HEAVY_CORE || state == StateTypes.PALE_MOSS_CARPET || BlockTags.WALL_HANGING_SIGNS.contains(state) ? rawLookupMap.getOrDefault(state, DEFAULT) : NO_COLLISION;
     }
 
     // TODO: This is wrong if a block doesn't have any hitbox and isn't specified, light block?

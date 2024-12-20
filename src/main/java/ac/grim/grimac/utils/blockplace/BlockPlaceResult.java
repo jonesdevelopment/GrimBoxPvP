@@ -423,18 +423,14 @@ public enum BlockPlaceResult {
         }
     }, ItemTypes.SUGAR_CANE),
 
-    // Moss carpet is a carpet not under the carpets tag
-    MOSS_CARPET((player, place) -> {
-        if (!place.getBelowMaterial().isAir()) {
-            place.set();
-        }
-    }, ItemTypes.MOSS_CARPET),
-
     CARPET((player, place) -> {
         if (!place.getBelowMaterial().isAir()) {
             place.set();
         }
     }, ItemTags.WOOL_CARPETS),
+
+    // Moss carpet is a carpet not under the carpets tag
+    MOSS_CARPET(CARPET.data, ItemTypes.MOSS_CARPET, ItemTypes.PALE_MOSS_CARPET),
 
     CHORUS_FLOWER((player, place) -> {
         WrappedBlockState blockstate = place.getBelowState();
