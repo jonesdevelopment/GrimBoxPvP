@@ -29,9 +29,7 @@ public class InventoryB extends InventoryCheck implements PostPredictionCheck {
                 final double difference = Math.abs(squaredActualSpeed - lastSquaredActualSpeed);
                 if (difference < 1e-7) {
                     if (flagAndAlert("difference=" + difference)) {
-                        if (setbackIfAboveSetbackVL()) {
-                            closeInventory();
-                        }
+                        closeInventory();
                     }
                 } else {
                     reward();

@@ -24,9 +24,7 @@ public class InventoryE extends InventoryCheck implements PacketCheck {
                     && !player.packetStateData.lastPacketWasTeleport
                     && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate
                     && flagAndAlert()) {
-                if (setbackIfAboveSetbackVL()) {
-                    closeInventory();
-                }
+                closeInventory();
             }
         }
     }

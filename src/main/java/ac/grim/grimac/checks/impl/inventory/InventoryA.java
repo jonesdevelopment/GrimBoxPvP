@@ -18,9 +18,7 @@ public class InventoryA extends InventoryCheck implements PostPredictionCheck {
                 && !player.packetStateData.lastPacketWasTeleport
                 && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate
                 && flagAndAlert()) {
-            if (setbackIfAboveSetbackVL()) {
-                closeInventory();
-            }
+            closeInventory();
         }
     }
 }
