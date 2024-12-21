@@ -16,6 +16,7 @@
  */
 
 package ac.grim.grimac.checks.type;
+
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.data.packetentity.PacketEntitySelf;
 import com.github.retrooper.packetevents.PacketEvents;
@@ -107,7 +108,7 @@ public class InventoryCheck extends BlockPlaceCheck implements PacketCheck {
         player.user.flushPackets();
     }
 
-    private boolean isNearNetherPortal(GrimPlayer player) {
+    private static boolean isNearNetherPortal(GrimPlayer player) {
         // Going inside nether portal with opened inventory cause desync, fixed in 1.12.2
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_12_1) &&
                 player.pointThreeEstimator.isNearNetherPortal) {
