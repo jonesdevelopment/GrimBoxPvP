@@ -1,6 +1,7 @@
 package ac.grim.grimac.utils.nmsutil;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.utils.data.tags.SyncedTags;
 import ac.grim.grimac.utils.enums.FluidTag;
 import ac.grim.grimac.utils.inventory.EnchantmentHelper;
 import com.github.retrooper.packetevents.PacketEvents;
@@ -12,7 +13,6 @@ import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.protocol.potion.PotionTypes;
-import com.github.retrooper.packetevents.protocol.world.MaterialType;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
 import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
@@ -50,13 +50,13 @@ public class BlockBreakSpeed {
 
         // 1.13 and below need their own huge methods to support this...
         if (tool.getType().hasAttribute(ItemTypes.ItemAttribute.AXE)) {
-            isCorrectToolForDrop = BlockTags.MINEABLE_AXE.contains(block.getType());
+            isCorrectToolForDrop = player.tagManager.block(SyncedTags.MINEABLE_AXE).contains(block.getType());
         } else if (tool.getType().hasAttribute(ItemTypes.ItemAttribute.PICKAXE)) {
-            isCorrectToolForDrop = BlockTags.MINEABLE_PICKAXE.contains(block.getType());
+            isCorrectToolForDrop = player.tagManager.block(SyncedTags.MINEABLE_PICKAXE).contains(block.getType());
         } else if (tool.getType().hasAttribute(ItemTypes.ItemAttribute.SHOVEL)) {
-            isCorrectToolForDrop = BlockTags.MINEABLE_SHOVEL.contains(block.getType());
+            isCorrectToolForDrop = player.tagManager.block(SyncedTags.MINEABLE_SHOVEL).contains(block.getType());
         } else if (tool.getType().hasAttribute(ItemTypes.ItemAttribute.HOE)) {
-            isCorrectToolForDrop = BlockTags.MINEABLE_HOE.contains(block.getType());
+            isCorrectToolForDrop = player.tagManager.block(SyncedTags.MINEABLE_HOE).contains(block.getType());
         }
 
         if (isCorrectToolForDrop) {
@@ -79,11 +79,11 @@ public class BlockBreakSpeed {
                 tier = 4;
             }
 
-            if (tier < 3 && BlockTags.NEEDS_DIAMOND_TOOL.contains(block.getType())) {
+            if (tier < 3 && player.tagManager.block(SyncedTags.NEEDS_DIAMOND_TOOL).contains(block.getType())) {
                 isCorrectToolForDrop = false;
-            } else if (tier < 2 && BlockTags.NEEDS_IRON_TOOL.contains(block.getType())) {
+            } else if (tier < 2 && player.tagManager.block(SyncedTags.NEEDS_IRON_TOOL).contains(block.getType())) {
                 isCorrectToolForDrop = false;
-            } else if (tier < 1 && BlockTags.NEEDS_STONE_TOOL.contains(block.getType())) {
+            } else if (tier < 1 && player.tagManager.block(SyncedTags.NEEDS_STONE_TOOL).contains(block.getType())) {
                 isCorrectToolForDrop = false;
             }
         }
@@ -110,11 +110,7 @@ public class BlockBreakSpeed {
         if (tool.getType().hasAttribute(ItemTypes.ItemAttribute.SWORD)) {
             if (block.getType() == StateTypes.COBWEB) {
                 speedMultiplier = 15.0f;
-            } else if (block.getType().getMaterialType() == MaterialType.PLANT
-                    || BlockTags.LEAVES.contains(block.getType())
-                    || block.getType() == StateTypes.VINE
-                    || block.getType() == StateTypes.PUMPKIN
-                    || block.getType() == StateTypes.MELON) {
+            } else if (player.tagManager.block(SyncedTags.SWORD_EFFICIENT).contains(block.getType())) {
                 speedMultiplier = 1.5f;
             }
 
