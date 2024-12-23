@@ -39,16 +39,17 @@ public final class SyncedTags {
     public SyncedTags(GrimPlayer player) {
         this.player = player;
         this.synced = new HashMap<>();
+        ClientVersion version = player.getClientVersion();
         trackTags(BLOCK, id -> StateTypes.getById(VERSION.toClientVersion(), id),
-                SyncedTag.<StateType>builder(CLIMBABLE).defaults(BlockTags.CLIMBABLE.getStates()),
-                SyncedTag.<StateType>builder(MINEABLE_AXE).defaults(BlockTags.MINEABLE_AXE.getStates()),
-                SyncedTag.<StateType>builder(MINEABLE_PICKAXE).defaults(BlockTags.MINEABLE_PICKAXE.getStates()),
-                SyncedTag.<StateType>builder(MINEABLE_SHOVEL).defaults(BlockTags.MINEABLE_SHOVEL.getStates()),
-                SyncedTag.<StateType>builder(MINEABLE_HOE).defaults(BlockTags.MINEABLE_HOE.getStates()),
-                SyncedTag.<StateType>builder(NEEDS_DIAMOND_TOOL).defaults(BlockTags.NEEDS_DIAMOND_TOOL.getStates()),
-                SyncedTag.<StateType>builder(NEEDS_IRON_TOOL).defaults(BlockTags.NEEDS_IRON_TOOL.getStates()),
-                SyncedTag.<StateType>builder(NEEDS_STONE_TOOL).defaults(BlockTags.NEEDS_STONE_TOOL.getStates()),
-                SyncedTag.<StateType>builder(SWORD_EFFICIENT).defaults(BlockTags.SWORD_EFFICIENT.getStates())
+                SyncedTag.<StateType>builder(CLIMBABLE).defaults(BlockTags.CLIMBABLE.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_16)),
+                SyncedTag.<StateType>builder(MINEABLE_AXE).defaults(BlockTags.MINEABLE_AXE.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_17)),
+                SyncedTag.<StateType>builder(MINEABLE_PICKAXE).defaults(BlockTags.MINEABLE_PICKAXE.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_17)),
+                SyncedTag.<StateType>builder(MINEABLE_SHOVEL).defaults(BlockTags.MINEABLE_SHOVEL.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_17)),
+                SyncedTag.<StateType>builder(MINEABLE_HOE).defaults(BlockTags.MINEABLE_HOE.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_17)),
+                SyncedTag.<StateType>builder(NEEDS_DIAMOND_TOOL).defaults(BlockTags.NEEDS_DIAMOND_TOOL.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_17)),
+                SyncedTag.<StateType>builder(NEEDS_IRON_TOOL).defaults(BlockTags.NEEDS_IRON_TOOL.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_17)),
+                SyncedTag.<StateType>builder(NEEDS_STONE_TOOL).defaults(BlockTags.NEEDS_STONE_TOOL.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_17)),
+                SyncedTag.<StateType>builder(SWORD_EFFICIENT).defaults(BlockTags.SWORD_EFFICIENT.getStates()).supported(version.isNewerThanOrEquals(ClientVersion.V_1_20))
         );
     }
 

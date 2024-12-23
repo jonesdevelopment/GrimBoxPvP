@@ -62,7 +62,7 @@ public class MultiPlace extends BlockPlaceCheck {
 
     @Override
     public void onPredictionComplete(PredictionComplete predictionComplete) {
-        if (player.getClientVersion().isNewerThan(ClientVersion.V_1_8) && player.isTickingReliablyFor(3) && !player.uncertaintyHandler.lastVehicleSwitch.hasOccurredSince(0)) {
+        if (player.getClientVersion().isNewerThan(ClientVersion.V_1_8) && player.isTickingReliablyFor(3)) {
             for (String verbose : flags) {
                 flagAndAlert(verbose);
             }

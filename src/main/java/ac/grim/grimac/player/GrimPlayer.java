@@ -56,6 +56,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -570,18 +571,13 @@ public class GrimPlayer implements GrimUser {
     public boolean isTickingReliablyFor(int ticks) {
         // 1.21.2+: Tick end packet, on servers 1.21.2+
         // 1.8-: Flying packet
-        return supportsEndTick()
-                || getClientVersion().isOlderThan(ClientVersion.V_1_9)
+        return !canSkipTicks() || inVehicle()
                 || !uncertaintyHandler.lastPointThree.hasOccurredSince(ticks)
-                || compensatedEntities.getSelf().inVehicle();
+                && !uncertaintyHandler.lastVehicleSwitch.hasOccurredSince(0);
     }
 
     public boolean inVehicle() {
         return compensatedEntities.getSelf().inVehicle();
-    }
-
-    public boolean canThePlayerBeCloseToZeroMovement(int ticks) {
-        return (!uncertaintyHandler.lastPointThree.hasOccurredSince(ticks));
     }
 
     public CompensatedInventory getInventory() {
@@ -704,9 +700,15 @@ public class GrimPlayer implements GrimUser {
         return getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_10) || (gamemode == GameMode.CREATIVE && compensatedEntities.getSelf().getOpLevel() >= 2);
     }
 
+    @Contract(pure = true)
     public boolean supportsEndTick() {
         // TODO: Bypass viaversion
         return getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_21_2) && PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_21_2);
+    }
+
+    @Contract(pure = true)
+    public boolean canSkipTicks() {
+        return getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9) && !supportsEndTick();
     }
 
     @Override

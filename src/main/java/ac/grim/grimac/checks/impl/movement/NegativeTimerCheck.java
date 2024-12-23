@@ -18,7 +18,7 @@ public class NegativeTimerCheck extends TimerCheck implements PostPredictionChec
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
         // We can't negative timer check a 1.9+ player who is standing still.
-        if (!player.canThePlayerBeCloseToZeroMovement(2) || !predictionComplete.isChecked()) {
+        if (player.uncertaintyHandler.lastPointThree.hasOccurredSince(2) || !predictionComplete.isChecked()) {
             timerBalanceRealTime = System.nanoTime() + clockDrift;
         }
 
