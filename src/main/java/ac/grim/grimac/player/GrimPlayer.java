@@ -438,7 +438,8 @@ public class GrimPlayer implements GrimUser {
     }
 
     public double getEyeHeight() {
-        return pose.eyeHeight;
+        return getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9) ? pose.eyeHeight
+                : isSneaking ? 1.54f : 1.62f;
     }
 
     public void timedOut() {
