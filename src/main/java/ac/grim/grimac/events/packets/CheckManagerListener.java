@@ -7,6 +7,7 @@ import ac.grim.grimac.utils.anticheat.update.*;
 import ac.grim.grimac.utils.blockplace.BlockPlaceResult;
 import ac.grim.grimac.utils.blockplace.ConsumesBlockPlace;
 import ac.grim.grimac.utils.change.BlockModification;
+import ac.grim.grimac.utils.collisions.CollisionData;
 import ac.grim.grimac.utils.collisions.HitboxData;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
@@ -131,7 +132,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
     }
 
     private static void placeWaterLavaSnowBucket(GrimPlayer player, ItemStack held, StateType toPlace, InteractionHand hand) {
-        HitData data = getNearestHitResult(player, StateTypes.AIR, false);
+        HitData data = getNearestHitResult(player, StateTypes.AIR, false, true);
         if (data != null) {
             BlockPlace blockPlace = new BlockPlace(player, hand, data.getPosition(), data.getClosestDirection().getFaceValue(), data.getClosestDirection(), held, data);
 
@@ -263,7 +264,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
             // The offhand is unable to interact with blocks like this... try to stop some desync points before they happen
             if ((!player.isSneaking || onlyAir) && place.getHand() == InteractionHand.MAIN_HAND) {
                 Vector3i blockPosition = place.getBlockPosition();
-                BlockPlace blockPlace = new BlockPlace(player, place.getHand(), blockPosition, place.getFaceId(), place.getFace(), placedWith, getNearestHitResult(player, null, true));
+                BlockPlace blockPlace = new BlockPlace(player, place.getHand(), blockPosition, place.getFaceId(), place.getFace(), placedWith, getNearestHitResult(player, null, true, false));
 
                 // Right-clicking a trapdoor/door/etc.
                 StateType placedAgainst = blockPlace.getPlacedAgainstMaterial();
@@ -302,7 +303,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
                 placedWith = player.getInventory().getOffHand();
             }
 
-            BlockPlace blockPlace = new BlockPlace(player, place.getHand(), blockPosition, place.getFaceId(), face, placedWith, getNearestHitResult(player, null, true));
+            BlockPlace blockPlace = new BlockPlace(player, place.getHand(), blockPosition, place.getFaceId(), face, placedWith, getNearestHitResult(player, null, true, false));
             // At this point, it is too late to cancel, so we can only flag, and cancel subsequent block places more aggressively
             if (!player.compensatedEntities.getSelf().inVehicle()) {
                 player.checkManager.onPostFlyingBlockPlace(blockPlace);
@@ -516,7 +517,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
                 player.placeUseItemPackets.add(new BlockPlaceSnapshot(packet, player.isSneaking));
             } else {
                 // Anti-air place
-                BlockPlace blockPlace = new BlockPlace(player, packet.getHand(), packet.getBlockPosition(), packet.getFaceId(), packet.getFace(), placedWith, getNearestHitResult(player, null, true));
+                BlockPlace blockPlace = new BlockPlace(player, packet.getHand(), packet.getBlockPosition(), packet.getFaceId(), packet.getFace(), placedWith, getNearestHitResult(player, null, true, false));
                 blockPlace.setCursor(packet.getCursorPosition());
 
                 if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_11) && player.getClientVersion().isOlderThan(ClientVersion.V_1_11)) {
@@ -599,7 +600,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
     }
 
     private static void placeBucket(GrimPlayer player, InteractionHand hand) {
-        HitData data = getNearestHitResult(player, null, true);
+        HitData data = getNearestHitResult(player, null, true, false);
 
         if (data != null) {
             BlockPlace blockPlace = new BlockPlace(player, hand, data.getPosition(), data.getClosestDirection().getFaceValue(), data.getClosestDirection(), ItemStack.EMPTY, data);
@@ -769,7 +770,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
     }
 
     private static void placeLilypad(GrimPlayer player, InteractionHand hand) {
-        HitData data = getNearestHitResult(player, null, true);
+        HitData data = getNearestHitResult(player, null, true, false);
 
         if (data != null) {
             // A lilypad cannot replace a fluid
@@ -799,15 +800,20 @@ public class CheckManagerListener extends PacketListenerAbstract {
         }
     }
 
-    private static HitData getNearestHitResult(GrimPlayer player, StateType heldItem, boolean sourcesHaveHitbox) {
+    private static HitData getNearestHitResult(GrimPlayer player, StateType heldItem, boolean sourcesHaveHitbox, boolean fluidPlacement) {
         Vector3d startingPos = new Vector3d(player.x, player.y + player.getEyeHeight(), player.z);
         Vector startingVec = new Vector(startingPos.getX(), startingPos.getY(), startingPos.getZ());
         Ray trace = new Ray(player, startingPos.getX(), startingPos.getY(), startingPos.getZ(), player.xRot, player.yRot);
-        final double distance = player.compensatedEntities.getSelf().getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
+        final double distance = fluidPlacement && player.getClientVersion().isOlderThan(ClientVersion.V_1_20_5) ? 5 : player.compensatedEntities.getSelf().getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
         Vector endVec = trace.getPointAtDistance(distance);
         Vector3d endPos = new Vector3d(endVec.getX(), endVec.getY(), endVec.getZ());
 
         return traverseBlocks(player, startingPos, endPos, (block, vector3i) -> {
+            if (fluidPlacement && player.getClientVersion().isOlderThan(ClientVersion.V_1_13) && CollisionData.getData(block.getType())
+                    .getMovementCollisionBox(player, player.getClientVersion(), block, vector3i.getX(), vector3i.getY(), vector3i.getZ()).isNull()) {
+                return null;
+            }
+
             CollisionBox data = HitboxData.getBlockHitbox(player, heldItem, player.getClientVersion(), block, vector3i.getX(), vector3i.getY(), vector3i.getZ());
             List<SimpleCollisionBox> boxes = new ArrayList<>();
             data.downCast(boxes);

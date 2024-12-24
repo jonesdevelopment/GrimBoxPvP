@@ -28,10 +28,11 @@ import io.github.retrooper.packetevents.util.viaversion.ViaVersionUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PacketEntityReplication extends Check implements PacketCheck {
 
-    private boolean hasSentPreWavePacket = true;
+    private final AtomicBoolean hasSentPreWavePacket = new AtomicBoolean(true);
 
     // Let's imagine the player is on a boat.
     // The player breaks this boat
@@ -408,10 +409,8 @@ public class PacketEntityReplication extends Check implements PacketCheck {
     private void handleMoveEntity(PacketSendEvent event, int entityId, double deltaX, double deltaY, double deltaZ, Float yaw, Float pitch, boolean isRelative, boolean hasPos) {
         TrackerData data = player.compensatedEntities.getTrackedEntity(entityId);
 
-        if (!hasSentPreWavePacket) {
-            hasSentPreWavePacket = true;
-            player.sendTransaction();
-        }
+        final boolean didNotSendPreWave = hasSentPreWavePacket.compareAndSet(false, true);
+        if (didNotSendPreWave) player.sendTransaction();
 
         if (data != null) {
             // Update the tracked server's entity position
@@ -507,7 +506,7 @@ public class PacketEntityReplication extends Check implements PacketCheck {
     }
 
     public void tickStartTick() {
-        hasSentPreWavePacket = false;
+        hasSentPreWavePacket.set(false);
     }
 
     private int maxFireworkBoostPing = 1000;
