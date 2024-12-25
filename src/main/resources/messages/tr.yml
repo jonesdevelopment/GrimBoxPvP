@@ -1,5 +1,3 @@
-# Hex kodlarını #FFFFFF veya #ffffff formatında kullanabilirsiniz :)
-
 # \u00BB eşittir » (çift >>), ANSI ve UTF-8 bunu farklı yorumlar. bu nedenle ? bile görebilirsiniz
 prefix: "&bGrim &8\u00BB"
 
