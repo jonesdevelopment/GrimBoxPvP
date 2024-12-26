@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class MessageUtil {
     private final Pattern HEX_PATTERN = Pattern.compile("([&§]#[A-Fa-f0-9]{6})|([&§]x([&§][A-Fa-f0-9]){6})");
     private final BukkitAudiences adventure = BukkitAudiences.create(GrimAPI.INSTANCE.getPlugin());
-    private final boolean hasPlaceholderAPI = Reflection.getClassByNameWithoutException("me.clip.placeholderapi.PlaceholderAPI") != null;
+    public final boolean hasPlaceholderAPI = Reflection.getClassByNameWithoutException("me.clip.placeholderapi.PlaceholderAPI") != null;
 
     public @NotNull String toUnlabledString(@Nullable Vector3i vec) {
         return vec == null ? "null" : vec.x + ", " + vec.y + ", " + vec.z;
