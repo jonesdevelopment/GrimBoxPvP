@@ -22,6 +22,11 @@ public class LogUtil {
         getLogger().severe(error);
     }
 
+    public void error(final String description, final Throwable throwable) {
+        getLogger().severe(description);
+        throwable.printStackTrace();
+    }
+
     public Logger getLogger() {
         return GrimAPI.INSTANCE.getPlugin().getLogger();
     }
@@ -33,4 +38,5 @@ public class LogUtil {
     public void console(final Component info) {
         MessageUtil.sendMessage(Bukkit.getConsoleSender(), info);
     }
+
 }
