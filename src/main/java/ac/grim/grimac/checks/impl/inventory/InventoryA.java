@@ -14,7 +14,7 @@ public class InventoryA extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
-        if (player.hasInventoryOpen && player.isSprinting && predictionComplete.isChecked()
+        if (player.hasInventoryOpen && player.isSprinting && !player.isSwimming && predictionComplete.isChecked()
                 && !player.packetStateData.lastPacketWasTeleport
                 && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate
                 && flagAndAlert()) {
