@@ -7,7 +7,7 @@ import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 
-@CheckData(name = "InventoryB", decay = 0.01)
+@CheckData(name = "InventoryB", decay = 0.01, experimental = true)
 public class InventoryB extends InventoryCheck implements PostPredictionCheck {
     public InventoryB(final GrimPlayer player) {
         super(player);
