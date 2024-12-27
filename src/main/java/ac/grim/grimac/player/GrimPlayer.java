@@ -41,6 +41,7 @@ import com.github.retrooper.packetevents.protocol.world.BlockFace;
 import com.github.retrooper.packetevents.protocol.world.dimension.DimensionType;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientCloseWindow;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.connection.UserConnection;
@@ -215,6 +216,9 @@ public class GrimPlayer implements GrimUser {
     }
 
     public int totalFlyingPacketsSent;
+    public long inventoryCloseTransaction = Long.MAX_VALUE;
+    public int inventoryClosePacketsToSkip;
+    public boolean hasInventoryOpen;
     public Queue<BlockPlaceSnapshot> placeUseItemPackets = new LinkedBlockingQueue<>();
     public PlayerBlockHistory blockHistory = new PlayerBlockHistory();
     // This variable is for support with test servers that want to be able to disable grim
@@ -265,6 +269,31 @@ public class GrimPlayer implements GrimUser {
 
         // reload last
         reload();
+    }
+
+    public void closeInventory() {
+        if (inventoryCloseTransaction != Long.MAX_VALUE) {
+            return;
+        }
+
+        int windowId = getInventory().openWindowID;
+        user.writePacket(new WrapperPlayServerCloseWindow(windowId));
+
+        inventoryClosePacketsToSkip = 1;
+        PacketEvents.getAPI().getProtocolManager().receivePacket(
+                user.getChannel(), new WrapperPlayClientCloseWindow(windowId));
+
+        sendTransaction();
+
+        int transaction = lastTransactionSent.get();
+        inventoryCloseTransaction = transaction;
+        latencyUtils.addRealTimeTask(transaction, () -> {
+            if (inventoryCloseTransaction == transaction) {
+                inventoryCloseTransaction = Long.MAX_VALUE;
+            }
+        });
+
+        user.flushPackets();
     }
 
     public Set<VectorData> getPossibleVelocities() {

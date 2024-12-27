@@ -1,7 +1,7 @@
 package ac.grim.grimac.checks.impl.inventory;
 
+import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
-import ac.grim.grimac.checks.type.InventoryCheck;
 import ac.grim.grimac.checks.type.PacketCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
@@ -11,15 +11,13 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEn
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 
 @CheckData(name = "InventoryD")
-public class InventoryD extends InventoryCheck implements PacketCheck {
+public class InventoryD extends Check implements PacketCheck {
     public InventoryD(final GrimPlayer player) {
         super(player);
     }
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
-        super.onPacketReceive(event);
-
         if (event.getPacketType().equals(PacketType.Play.Client.PLAYER_DIGGING)
                 && new WrapperPlayClientPlayerDigging(event).getAction() == DiggingAction.START_DIGGING) {
             handleAction(event);
@@ -37,12 +35,12 @@ public class InventoryD extends InventoryCheck implements PacketCheck {
     }
 
     private void handleAction(PacketReceiveEvent event) {
-        if (hasInventoryOpen && flagAndAlert("type=" + event.getPacketType())) {
+        if (player.hasInventoryOpen && flagAndAlert("type=" + event.getPacketType())) {
             if (shouldModifyPackets()) {
                 event.setCancelled(true);
                 player.onPacketCancel();
             }
-            closeInventory();
+            player.closeInventory();
         }
     }
 }

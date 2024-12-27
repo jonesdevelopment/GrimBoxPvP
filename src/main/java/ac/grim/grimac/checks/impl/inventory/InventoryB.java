@@ -1,14 +1,14 @@
 package ac.grim.grimac.checks.impl.inventory;
 
+import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
-import ac.grim.grimac.checks.type.InventoryCheck;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 
 @CheckData(name = "InventoryB", decay = 0.01, experimental = true)
-public class InventoryB extends InventoryCheck implements PostPredictionCheck {
+public class InventoryB extends Check implements PostPredictionCheck {
     public InventoryB(final GrimPlayer player) {
         super(player);
     }
@@ -17,7 +17,7 @@ public class InventoryB extends InventoryCheck implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
-        if (hasInventoryOpen && !player.isFlying && predictionComplete.isChecked()
+        if (player.hasInventoryOpen && !player.isFlying && predictionComplete.isChecked()
                 && !player.packetStateData.lastPacketWasTeleport
                 && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate) {
             final double squaredActualSpeed = player.actualMovement.getX() * player.actualMovement.getX()
@@ -29,7 +29,7 @@ public class InventoryB extends InventoryCheck implements PostPredictionCheck {
                 final double difference = Math.abs(squaredActualSpeed - lastSquaredActualSpeed);
                 if (difference < 1e-7) {
                     if (flagAndAlert("difference=" + difference)) {
-                        closeInventory();
+                        player.closeInventory();
                     }
                 } else {
                     reward();
