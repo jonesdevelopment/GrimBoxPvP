@@ -6,7 +6,7 @@ import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 
-@CheckData(name = "InventoryA", setback = 0)
+@CheckData(name = "InventoryA")
 public class InventoryA extends InventoryCheck implements PostPredictionCheck {
     public InventoryA(final GrimPlayer player) {
         super(player);

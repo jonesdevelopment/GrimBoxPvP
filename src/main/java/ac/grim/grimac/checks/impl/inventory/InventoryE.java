@@ -6,7 +6,7 @@ import ac.grim.grimac.checks.type.RotationCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.RotationUpdate;
 
-@CheckData(name = "InventoryE", setback = 1)
+@CheckData(name = "InventoryE")
 public class InventoryE extends InventoryCheck implements RotationCheck {
     public InventoryE(final GrimPlayer player) {
         super(player);
