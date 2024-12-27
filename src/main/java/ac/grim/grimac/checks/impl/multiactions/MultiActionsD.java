@@ -15,7 +15,7 @@ public class MultiActionsD extends Check implements PacketCheck {
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
-        if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
+        if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW && player.inventoryClosePacketsToSkip == 0) {
             String verbose = player.isSprinting && !player.isSwimming ? "sprinting" : "";
 
             if (player.packetStateData.isSlowedByUsingItem()) {
