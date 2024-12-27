@@ -50,6 +50,8 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
             // Players with high ping can close inventory faster than send transaction back
             if (player.inventoryCloseTransaction != Long.MAX_VALUE && player.inventoryClosePacketsToSkip-- <= 0) {
                 player.inventoryCloseTransaction = Long.MAX_VALUE;
+            } else {
+                player.inventoryClosePacketsToSkip = 0;
             }
             player.hasInventoryOpen = false;
         }
