@@ -34,19 +34,24 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
                 player.hasInventoryOpen = true;
             }
         } else if (event.getPacketType() == PacketType.Play.Client.CLICK_WINDOW) {
-            // Disallow any clicks if inventory is closing
             GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
             if (player == null) return;
-            player.hasInventoryOpen = true;
-        } else if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
             // Disallow any clicks if inventory is closing
+            if (player.inventoryCloseTransaction != Long.MAX_VALUE) {
+                event.setCancelled(true);
+                player.onPacketCancel();
+                player.getInventory().needResend = true;
+            } else {
+                player.hasInventoryOpen = true;
+            }
+        } else if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
             GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
             if (player == null) return;
             // Players with high ping can close inventory faster than send transaction back
-            player.hasInventoryOpen = false;
             if (player.inventoryCloseTransaction != Long.MAX_VALUE && player.inventoryClosePacketsToSkip-- <= 0) {
                 player.inventoryCloseTransaction = Long.MAX_VALUE;
             }
+            player.hasInventoryOpen = false;
         }
     }
 
