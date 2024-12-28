@@ -99,6 +99,7 @@ public class MovementTicker {
             player.clientVelocity.setZ(0);
         }
 
+        player.horizontalCollision = inputVel.getX() != collide.getX() || inputVel.getZ() != collide.getZ();
         player.verticalCollision = inputVel.getY() != collide.getY();
 
         // Avoid order of collisions being wrong because 0.03 movements
