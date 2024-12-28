@@ -50,6 +50,7 @@ public class EntityA extends Check implements PacketCheck {
             player.user.sendPacket(new WrapperPlayServerSpawnEntity(
                     entityId, uuid, EntityTypes.SKELETON, location, 0, 0, Vector3d.zero()));
             player.user.sendPacket(meta.createPacket());
+            damageEntity();
         } else if (event.getPacketType().equals(PacketType.Play.Client.PLAYER_POSITION)
                 || event.getPacketType().equals(PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION)
                 || event.getPacketType().equals(PacketType.Play.Client.PLAYER_ROTATION)) {
@@ -65,9 +66,6 @@ public class EntityA extends Check implements PacketCheck {
             }
             if (packetsSinceAttack % 15 == 0) {
                 correctEntityRotation();
-            }
-            if (packetsSinceAttack % 20 == 0) {
-                damageEntity();
             }
         }
     }
