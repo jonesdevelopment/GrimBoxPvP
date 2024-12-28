@@ -88,12 +88,14 @@ public class Check extends GrimProcessor implements AbstractCheck {
         if (player.disableGrim || (experimental && !player.isExperimentalChecks()) || exempted)
             return false; // Avoid calling event if disabled
 
-        violations++;
         FlagEvent event = new FlagEvent(player, this);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
+
         player.punishmentManager.handleViolation(this);
+
+        violations++;
         return true;
     }
 
