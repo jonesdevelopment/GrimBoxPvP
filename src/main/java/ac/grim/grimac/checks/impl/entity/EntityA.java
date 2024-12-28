@@ -21,10 +21,14 @@ import java.util.UUID;
 public class EntityA extends Check implements PacketCheck {
     public EntityA(GrimPlayer player) {
         super(player);
+        uuid = UUID.randomUUID();
+        generatedEntityId = EntityLib.getPlatform().getEntityIdProvider().provide(uuid, EntityTypes.SKELETON);
     }
 
+    private final int generatedEntityId;
+    private final UUID uuid;
     private int entityId = -1;
-    private int packetsSinceAttack = 0;
+    private int packetsSinceAttack;
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
@@ -38,8 +42,7 @@ public class EntityA extends Check implements PacketCheck {
                 }
                 return;
             }
-            final UUID uuid = UUID.randomUUID();
-            entityId = EntityLib.getPlatform().getEntityIdProvider().provide(uuid, EntityTypes.SKELETON);
+            entityId = generatedEntityId;
             final EntityMeta meta = EntityMeta.createMeta(entityId, EntityTypes.SKELETON);
             final Vector3d position = new Vector3d(player.x, player.y + 5, player.z);
             final Location location = new Location(position, (int) (player.xRot / 3), (int) (player.yRot / 3));
