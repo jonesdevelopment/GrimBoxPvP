@@ -11,6 +11,7 @@ import ac.grim.grimac.checks.impl.combat.MultiInteractA;
 import ac.grim.grimac.checks.impl.combat.MultiInteractB;
 import ac.grim.grimac.checks.impl.combat.Reach;
 import ac.grim.grimac.checks.impl.crash.*;
+import ac.grim.grimac.checks.impl.entity.EntityA;
 import ac.grim.grimac.checks.impl.exploit.ExploitA;
 import ac.grim.grimac.checks.impl.exploit.ExploitB;
 import ac.grim.grimac.checks.impl.exploit.ExploitC;
@@ -108,6 +109,7 @@ public class CheckManager {
                 .put(InventoryC.class, new InventoryC(player))
                 .put(InventoryD.class, new InventoryD(player))
                 .put(InventoryF.class, new InventoryF(player))
+                .put(EntityA.class, new EntityA(player))
                 .put(MultiActionsA.class, new MultiActionsA(player))
                 .put(MultiActionsB.class, new MultiActionsB(player))
                 .put(MultiActionsC.class, new MultiActionsC(player))

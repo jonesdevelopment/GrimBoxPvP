@@ -12,6 +12,9 @@ import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
+import me.tofaa.entitylib.APIConfig;
+import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
 
 import java.util.concurrent.Executors;
 
@@ -27,6 +30,8 @@ public class PacketEventsInit implements Initable {
                 .reEncodeByDefault(false)
                 .debug(false);
         PacketEvents.getAPI().load();
+        EntityLib.init(new SpigotEntityLibPlatform(GrimAPI.INSTANCE.getPlugin()),
+                new APIConfig(PacketEvents.getAPI()).tickTickables().usePlatformLogger());
         // This may seem useless, but it causes java to start loading stuff async before we need it
         Executors.defaultThreadFactory().newThread(() -> {
             StateTypes.AIR.getName();

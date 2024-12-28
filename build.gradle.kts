@@ -57,6 +57,7 @@ repositories {
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // placeholderapi
+    maven("https://maven.evokegames.gg/snapshots/") // EntityLib
     mavenCentral()
     // FastUtil, Discord-Webhooks
 }
@@ -74,6 +75,8 @@ dependencies {
 
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
+
+    implementation("me.tofaa.entitylib:spigot:3.0.3-SNAPSHOT")
 
     implementation("org.jetbrains:annotations:24.1.0")
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
@@ -191,5 +194,6 @@ tasks.shadowJar {
         relocate("org.json", "ac.grim.grimac.shaded.json")
         relocate("org.intellij", "ac.grim.grimac.shaded.intellij")
         relocate("org.jetbrains", "ac.grim.grimac.shaded.jetbrains")
+        relocate("me.tofaa.entitylib", "ac.grim.grimac.shaded.entitylib")
     }
 }
