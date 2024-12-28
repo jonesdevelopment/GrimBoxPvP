@@ -26,7 +26,7 @@ public class EntityA extends Check implements PacketCheck {
     // This can easily be detected, but it's still safer than using a huge number.
     private final int generatedEntityId = -player.entityID;
     private final UUID uuid;
-    private int entityId = -1;
+    private int entityId = Integer.MAX_VALUE;
     private int packetsSinceAttack;
 
     @Override
@@ -34,7 +34,7 @@ public class EntityA extends Check implements PacketCheck {
         if (event.getPacketType().equals(PacketType.Play.Client.INTERACT_ENTITY)) {
             final WrapperPlayClientInteractEntity packet = new WrapperPlayClientInteractEntity(event);
             if (packet.getAction() != WrapperPlayClientInteractEntity.InteractAction.ATTACK) return;
-            if (entityId != -1) {
+            if (entityId != Integer.MAX_VALUE) {
                 if (entityId == packet.getEntityId()) {
                     alert("");
                 }
@@ -53,10 +53,10 @@ public class EntityA extends Check implements PacketCheck {
         } else if (event.getPacketType().equals(PacketType.Play.Client.PLAYER_POSITION)
                 || event.getPacketType().equals(PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION)
                 || event.getPacketType().equals(PacketType.Play.Client.PLAYER_ROTATION)) {
-            if (entityId == -1) return;
+            if (entityId == Integer.MAX_VALUE) return;
             if (++packetsSinceAttack > 20) {
                 player.user.sendPacket(new WrapperPlayServerDestroyEntities(entityId));
-                entityId = -1;
+                entityId = Integer.MAX_VALUE;
                 return;
             }
             if (player.packetStateData.lastPacketWasTeleport || player.packetStateData.lastPacketWasOnePointSeventeenDuplicate) return;
@@ -93,7 +93,7 @@ public class EntityA extends Check implements PacketCheck {
     @Override
     public void onPacketSend(PacketSendEvent event) {
         if (event.getPacketType().equals(PacketType.Play.Server.RESPAWN)) {
-            entityId = -1;
+            entityId = Integer.MAX_VALUE;
         }
     }
 }
