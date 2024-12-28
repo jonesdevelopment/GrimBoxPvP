@@ -17,9 +17,15 @@ public class InventoryB extends Check implements PostPredictionCheck {
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
-        if (player.hasInventoryOpen && !player.isFlying && !player.isGliding && predictionComplete.isChecked()
+        if (player.hasInventoryOpen && predictionComplete.isChecked()
+                && !player.isFlying && !player.isGliding && !player.isSwimming
                 && !player.packetStateData.lastPacketWasTeleport
-                && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate) {
+                && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate
+                && !player.uncertaintyHandler.isOrWasNearGlitchyBlock
+                && !player.uncertaintyHandler.isSteppingOnHoney
+                && !player.uncertaintyHandler.isSteppingOnSlime
+                && !player.uncertaintyHandler.isSteppingOnBouncyBlock
+                && !player.uncertaintyHandler.lastMovementWasZeroPointZeroThree) {
             final double squaredActualSpeed = player.actualMovement.getX() * player.actualMovement.getX()
                     + player.actualMovement.getZ() * player.actualMovement.getZ();
             final double movementSpeed = player.compensatedEntities.getSelf()
