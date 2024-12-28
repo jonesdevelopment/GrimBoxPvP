@@ -29,6 +29,32 @@ public class ClientBrand extends Check implements PacketCheck {
             String channelName = packet.getChannelName();
             if (channelName.equalsIgnoreCase("minecraft:brand") || channelName.equals("MC|Brand")) {
                 handle(packet.getData());
+            } else if (channelName.equalsIgnoreCase("autototem")) {
+                String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-register-bad-channel", "%prefix% &f%player% registered channel %channel%")
+                        .replace("%channel%", channelName);
+                message = MessageUtil.replacePlaceholders(player, message);
+                Component component = MessageUtil.miniMessage(message);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.hasPermission("grim.brand")) {
+                        MessageUtil.sendMessage(player, component);
+                    }
+                }
+                Bukkit.getLogger().warning(player.getName() + " registered channel " + channelName);
+                player.timedOut();
+            } else if ((channelName.equalsIgnoreCase("minecraft:register") || channelName.equalsIgnoreCase("REGISTER")) && !brand.equals("fabric")) {
+                final String data = new String(packet.getData());
+                if (data.contains("fabric")) {
+                    String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-brand-format-spoofed", "%prefix% &f%player% tried to spoof their brand to %brand%");
+                    message = MessageUtil.replacePlaceholders(player, message);
+                    Component component = MessageUtil.miniMessage(message);
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (player.hasPermission("grim.brand")) {
+                            MessageUtil.sendMessage(player, component);
+                        }
+                    }
+                    Bukkit.getLogger().warning(player.getName() + " tried to spoof their brand to " + brand);
+                    player.timedOut();
+                }
             }
         }
     }
