@@ -5,20 +5,21 @@ import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
-import ac.grim.grimac.utils.enums.FluidTag;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 
-@CheckData(name = "NoSlowC", description = "Sprinting while sneaking", setback = 5, experimental = true)
-public class NoSlowC extends Check implements PostPredictionCheck {
-    public NoSlowC(GrimPlayer player) {
+@CheckData(name = "NoSlowD", description = "Sprinting while using an item", setback = 5, experimental = true)
+public class SprintC extends Check implements PostPredictionCheck {
+    public SprintC(GrimPlayer player) {
         super(player);
     }
+
+    private boolean flaggedLastTick = false;
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
         if (!predictionComplete.isChecked()) return;
 
-        if (player.isSlowMovement && player.sneakingSpeedMultiplier < 0.8f) {
+        if (player.packetStateData.isSlowedByUsingItem()) {
             ClientVersion client = player.getClientVersion();
 
             // https://bugs.mojang.com/browse/MC-152728
@@ -26,9 +27,13 @@ public class NoSlowC extends Check implements PostPredictionCheck {
                 return;
             }
 
-            if (player.isSprinting && !player.isSwimming && (player.fluidOnEyes != FluidTag.WATER || client.isOlderThan(ClientVersion.V_1_21_4))) {
-                if (flagWithSetback()) alert("");
-            } else reward();
+            if (player.isSprinting && (!player.isSwimming || client.isOlderThan(ClientVersion.V_1_21_4))) {
+                if (flaggedLastTick && flagWithSetback()) alert("");
+                flaggedLastTick = true;
+            } else {
+                reward();
+                flaggedLastTick = false;
+            }
         }
     }
 }

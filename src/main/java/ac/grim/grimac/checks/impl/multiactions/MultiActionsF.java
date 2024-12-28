@@ -7,10 +7,8 @@ import ac.grim.grimac.utils.anticheat.update.BlockPlace;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,7 @@ public class MultiActionsF extends BlockPlaceCheck {
     public void onBlockPlace(BlockPlace place) {
         block = true;
         if (entity) {
-            if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8)) {
+            if (!player.canSkipTicks()) {
                 if (flagAndAlert("place") && shouldModifyPackets() && shouldCancel()) {
                     place.resync();
                 }
@@ -45,7 +43,7 @@ public class MultiActionsF extends BlockPlaceCheck {
         if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
             entity = true;
             if (block) {
-                if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8)) {
+                if (!player.canSkipTicks()) {
                     if (flagAndAlert("entity") && shouldModifyPackets()) {
                         event.setCancelled(true);
                         player.onPacketCancel();
@@ -61,7 +59,7 @@ public class MultiActionsF extends BlockPlaceCheck {
             if (packet.getAction() == DiggingAction.START_DIGGING || packet.getAction() == DiggingAction.FINISHED_DIGGING) {
                 block = true;
                 if (entity) {
-                    if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8)) {
+                    if (!player.canSkipTicks()) {
                         if (flagAndAlert("dig") && shouldModifyPackets()) {
                             event.setCancelled(true);
                             player.onPacketCancel();
@@ -74,14 +72,16 @@ public class MultiActionsF extends BlockPlaceCheck {
             }
         }
 
-        if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType()) && !player.packetStateData.lastPacketWasTeleport && !player.packetStateData.lastPacketWasOnePointSeventeenDuplicate) {
+        if (isTickPacket(event.getPacketType())) {
             block = entity = false;
         }
     }
 
     @Override
     public void onPredictionComplete(PredictionComplete predictionComplete) {
-        if (player.getClientVersion().isNewerThan(ClientVersion.V_1_8) && player.isTickingReliablyFor(3)) {
+        if (!player.canSkipTicks()) return;
+
+        if (player.isTickingReliablyFor(3)) {
             for (String verbose : flags) {
                 flagAndAlert(verbose);
             }

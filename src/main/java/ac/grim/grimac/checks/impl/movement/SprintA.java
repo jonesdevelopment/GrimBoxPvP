@@ -8,9 +8,9 @@ import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 
 @CheckData(name = "NoSlowB", description = "Sprinting with too low hunger", setback = 5)
-public class NoSlowB extends Check implements PacketCheck {
+public class SprintA extends Check implements PacketCheck {
 
-    public NoSlowB(GrimPlayer player) {
+    public SprintA(GrimPlayer player) {
         super(player);
     }
 

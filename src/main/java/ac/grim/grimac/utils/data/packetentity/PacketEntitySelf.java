@@ -1,6 +1,6 @@
 package ac.grim.grimac.utils.data.packetentity;
 
-import ac.grim.grimac.checks.impl.movement.NoSlowE;
+import ac.grim.grimac.checks.impl.movement.SprintD;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.attribute.ValuedAttribute;
@@ -150,7 +150,7 @@ public class PacketEntitySelf extends PacketEntity {
     @Override
     public void addPotionEffect(PotionType effect, int amplifier) {
         if (effect == PotionTypes.BLINDNESS && !hasPotionEffect(PotionTypes.BLINDNESS)) {
-            player.checkManager.getPostPredictionCheck(NoSlowE.class).startedSprintingBeforeBlind = player.isSprinting;
+            player.checkManager.getPostPredictionCheck(SprintD.class).startedSprintingBeforeBlind = player.isSprinting;
         }
 
         player.pointThreeEstimator.updatePlayerPotions(effect, amplifier);

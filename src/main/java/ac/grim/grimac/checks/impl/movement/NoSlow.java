@@ -8,8 +8,8 @@ import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 
-@CheckData(name = "NoSlowA (Prediction)", configName = "NoSlowA", description = "Was not slowed while using an item", setback = 5)
-public class NoSlowA extends Check implements PostPredictionCheck {
+@CheckData(name = "NoSlow (Prediction)", configName = "NoSlow", description = "Was not slowed while using an item", setback = 5)
+public class NoSlow extends Check implements PostPredictionCheck {
     double offsetToFlag;
     double bestOffset = 1;
     // The player sends that they switched items the next tick if they switch from an item that can be used
@@ -17,7 +17,7 @@ public class NoSlowA extends Check implements PostPredictionCheck {
     public boolean didSlotChangeLastTick = false;
     public boolean flaggedLastTick = false;
 
-    public NoSlowA(GrimPlayer player) {
+    public NoSlow(GrimPlayer player) {
         super(player);
     }
 
@@ -52,6 +52,6 @@ public class NoSlowA extends Check implements PostPredictionCheck {
 
     @Override
     public void onReload(ConfigManager config) {
-        offsetToFlag = config.getDoubleElse("NoSlowA.threshold", 0.001);
+        offsetToFlag = config.getDoubleElse("NoSlow.threshold", 0.001);
     }
 }

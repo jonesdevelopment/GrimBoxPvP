@@ -82,7 +82,7 @@ RotationPlace:
   # Livello di violazione per il piazzamento con rotazione specifica
   cancelvl: 5
 
-NoSlowA:
+NoSlow:
   # Limite per rilevare l'uso scorretto dell'oggetto
   threshold: 0.001
   # Livello di violazione per l'uso scorretto dell'oggetto

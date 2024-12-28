@@ -7,7 +7,6 @@ import ac.grim.grimac.utils.anticheat.MessageUtil;
 import ac.grim.grimac.utils.anticheat.update.BlockPlace;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.util.Vector3i;
@@ -38,7 +37,7 @@ public class MultiPlace extends BlockPlaceCheck {
             final String verbose = "face=" + face + ", lastFace=" + lastFace
                     + ", cursor=" + MessageUtil.toUnlabledString(cursor) + ", lastCursor=" + MessageUtil.toUnlabledString(lastCursor)
                     + ", pos=" + MessageUtil.toUnlabledString(pos) + ", lastPos=" + MessageUtil.toUnlabledString(lastPos);
-            if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8)) {
+            if (!player.canSkipTicks()) {
                 if (flagAndAlert(verbose) && shouldModifyPackets() && shouldCancel()) {
                     place.resync();
                 }
@@ -62,7 +61,9 @@ public class MultiPlace extends BlockPlaceCheck {
 
     @Override
     public void onPredictionComplete(PredictionComplete predictionComplete) {
-        if (player.getClientVersion().isNewerThan(ClientVersion.V_1_8) && player.isTickingReliablyFor(3)) {
+        if (!player.canSkipTicks()) return;
+
+        if (player.isTickingReliablyFor(3)) {
             for (String verbose : flags) {
                 flagAndAlert(verbose);
             }

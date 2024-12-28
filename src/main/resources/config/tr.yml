@@ -87,7 +87,7 @@ RotationPlace:
 # Tahmin tabanlı yavaşlama kontrolü
 # Grim burada hatalı ağ kodunu dikkate alır... sağ tıklama ve el yan tuşunu spam yapsanız bile yanlış pozitiflik oluşturması zordur
 # Diğer anti-hilelerden çok daha stabil, ancak herhangi bir yanlış pozitif rapor edin... burada birçok ağ kodu sorununu çözdüm.
-NoSlowA:
+NoSlow:
   # Ne kadar bir sapma "hile" olarak kabul edilir?
   # Varsayılan olarak bu, diğer sapmalardan daha düşüktür
   # NoSlow açıkken 0.03-0.2 aralığında sürekli olarak uyarı verir

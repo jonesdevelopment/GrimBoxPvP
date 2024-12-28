@@ -89,7 +89,7 @@ RotationPlace:
 # Grim considera erros no netcode. Difícil de gerar falsos positivos, até mesmo spamando o blotão direito e a offhand.
 # Muito mais estável que outros anticheats, mas por favor, reporte quaisquer falsos positivos. Eu já arrumei diversos
 # erros de netcode.
-NoSlowA:
+NoSlow:
   # Quanto de desalinhamento é considerado trapaça?
   # Por padrão é menor que os outros.
   # Em 0.03-0.2 detecta com consistência.

@@ -87,7 +87,7 @@ RotationPlace:
 # Op voorspelling gebaseerde NoSlow-controle
 # Grim is verantwoordelijk voor buggy netcode hier... moeilijk om vals te spelen, zelfs als je met rechts klikt en de offhand-knop spamt
 # Veel stabieler dan andere anticheats, maar rapporteer alsjeblieft alle falses... Ik heb hier een heleboel netcode-problemen opgelost.
-NoSlowA:
+NoSlow:
   # Hoeveel van een offset is "valsspelen"?
   # Standaard is dit lager dan andere offs
   # Flaggen met 0.03-0.2 consequent met NoSlow aan
