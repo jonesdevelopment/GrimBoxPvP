@@ -34,13 +34,13 @@ public class EntityA extends Check implements PacketCheck {
         if (event.getPacketType().equals(PacketType.Play.Client.INTERACT_ENTITY)) {
             final WrapperPlayClientInteractEntity packet = new WrapperPlayClientInteractEntity(event);
             if (packet.getAction() != WrapperPlayClientInteractEntity.InteractAction.ATTACK) return;
-            packetsSinceAttack = 0;
             if (entityId != -1) {
                 if (entityId == packet.getEntityId()) {
                     alert("");
                 }
                 return;
             }
+            packetsSinceAttack = 0;
             entityId = generatedEntityId;
             final EntityMeta meta = EntityMeta.createMeta(entityId, EntityTypes.SKELETON);
             final Vector3d position = new Vector3d(player.x, player.y + 5, player.z);
@@ -54,7 +54,7 @@ public class EntityA extends Check implements PacketCheck {
                 || event.getPacketType().equals(PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION)
                 || event.getPacketType().equals(PacketType.Play.Client.PLAYER_ROTATION)) {
             if (entityId == -1) return;
-            if (++packetsSinceAttack > 30) {
+            if (++packetsSinceAttack > 20) {
                 player.user.sendPacket(new WrapperPlayServerDestroyEntities(entityId));
                 entityId = -1;
                 return;
@@ -63,7 +63,7 @@ public class EntityA extends Check implements PacketCheck {
             if (packetsSinceAttack % 3 == 0) {
                 correctEntityPosition();
             }
-            if (packetsSinceAttack % 15 == 0) {
+            if (packetsSinceAttack % 8 == 0) {
                 correctEntityRotation();
             }
         }
