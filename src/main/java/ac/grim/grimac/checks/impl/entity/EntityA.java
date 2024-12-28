@@ -12,20 +12,19 @@ import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
-import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.meta.EntityMeta;
 
 import java.util.UUID;
 
-@CheckData(name = "Entity")
+@CheckData(name = "Entity", experimental = true)
 public class EntityA extends Check implements PacketCheck {
     public EntityA(GrimPlayer player) {
         super(player);
         uuid = UUID.randomUUID();
-        generatedEntityId = EntityLib.getPlatform().getEntityIdProvider().provide(uuid, EntityTypes.SKELETON);
     }
 
-    private final int generatedEntityId;
+    // This can easily be detected, but it's still safer than using a huge number.
+    private final int generatedEntityId = -player.entityID;
     private final UUID uuid;
     private int entityId = -1;
     private int packetsSinceAttack;
