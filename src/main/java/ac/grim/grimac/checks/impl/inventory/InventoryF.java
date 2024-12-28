@@ -14,13 +14,17 @@ public class InventoryF extends Check implements PacketCheck {
         super(player);
     }
 
-    private long lastTransaction = Long.MAX_VALUE;
+    private boolean exempt = true;
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
         if (event.getPacketType().equals(PacketType.Play.Client.HELD_ITEM_CHANGE)) {
             if (player.hasInventoryOpen) {
-                if (lastTransaction < player.lastTransactionReceived.get() && flagAndAlert()) {
+                if (exempt) {
+                    exempt = false;
+                    return;
+                }
+                if (flagAndAlert()) {
                     if (shouldModifyPackets()) {
                         event.setCancelled(true);
                         player.onPacketCancel();
@@ -37,7 +41,7 @@ public class InventoryF extends Check implements PacketCheck {
     @Override
     public void onPacketSend(PacketSendEvent event) {
         if (event.getPacketType() == PacketType.Play.Server.HELD_ITEM_CHANGE) {
-            lastTransaction = player.lastTransactionSent.get();
+            player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> exempt = true);
         }
     }
 }

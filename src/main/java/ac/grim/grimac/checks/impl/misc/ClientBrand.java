@@ -41,7 +41,7 @@ public class ClientBrand extends Check implements PacketCheck {
                 }
                 Bukkit.getLogger().warning(player.getName() + " registered channel " + channelName);
                 player.timedOut();
-            } else if ((channelName.equalsIgnoreCase("minecraft:register") || channelName.equalsIgnoreCase("REGISTER")) && !brand.equals("fabric")) {
+            } else if ((channelName.equalsIgnoreCase("minecraft:register") || channelName.equalsIgnoreCase("REGISTER")) && brand.equals("vanilla")) {
                 final String data = new String(packet.getData());
                 if (data.contains("fabric")) {
                     String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-brand-format-spoofed", "%prefix% &f%player% tried to spoof their brand to %brand%");
