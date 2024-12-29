@@ -21,8 +21,8 @@ public class SprintE extends Check implements PostPredictionCheck {
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
         if (event.getPacketType() == PacketType.Play.Client.ENTITY_ACTION) {
-            switch (new WrapperPlayClientEntityAction(event).getAction()) {
-                case START_SPRINTING, STOP_SPRINTING -> startedSprintingThisTick = true;
+            if (new WrapperPlayClientEntityAction(event).getAction() == WrapperPlayClientEntityAction.Action.START_SPRINTING) {
+                startedSprintingThisTick = true;
             }
         }
     }

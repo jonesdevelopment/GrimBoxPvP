@@ -18,7 +18,7 @@ import ac.grim.grimac.checks.impl.exploit.ExploitC;
 import ac.grim.grimac.checks.impl.groundspoof.NoFall;
 import ac.grim.grimac.checks.impl.inventory.*;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
-import ac.grim.grimac.checks.impl.misc.FastBreak;
+import ac.grim.grimac.checks.impl.breaking.FastBreak;
 import ac.grim.grimac.checks.impl.misc.GhostBlockMitigation;
 import ac.grim.grimac.checks.impl.misc.TransactionOrder;
 import ac.grim.grimac.checks.impl.movement.*;
@@ -104,6 +104,7 @@ public class CheckManager {
                 .put(BadPacketsS.class, new BadPacketsS(player))
                 .put(BadPacketsT.class, new BadPacketsT(player))
                 .put(BadPacketsU.class, new BadPacketsU(player))
+                .put(BadPacketsV.class, new BadPacketsV(player))
                 .put(BadPacketsW.class, new BadPacketsW(player))
                 .put(BadPacketsY.class, new BadPacketsY(player))
                 .put(InventoryC.class, new InventoryC(player))

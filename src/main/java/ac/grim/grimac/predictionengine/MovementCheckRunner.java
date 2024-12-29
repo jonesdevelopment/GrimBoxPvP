@@ -286,7 +286,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
                     // Entity control cheats!  Set the player back
                     control.flagAndAlert();
                 } else {
-                    control.rewardPlayer();
+                    control.reward();
                 }
             }
         }

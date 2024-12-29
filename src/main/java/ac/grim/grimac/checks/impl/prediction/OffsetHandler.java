@@ -30,11 +30,11 @@ public class OffsetHandler extends Check implements PostPredictionCheck {
     }
 
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
-        double offset = predictionComplete.getOffset();
-
         if (!predictionComplete.isChecked()) return;
 
-        CompletePredictionEvent completePredictionEvent = new CompletePredictionEvent(getPlayer(), this, predictionComplete.getOffset());
+        double offset = predictionComplete.getOffset();
+
+        CompletePredictionEvent completePredictionEvent = new CompletePredictionEvent(player, this, offset);
         Bukkit.getPluginManager().callEvent(completePredictionEvent);
 
         if (completePredictionEvent.isCancelled()) return;
@@ -67,7 +67,7 @@ public class OffsetHandler extends Check implements PostPredictionCheck {
                     humanFormattedOffset = humanFormattedOffset.replace("0.", ".");
                 }
 
-                if(alert(humanFormattedOffset + " /gl " + flagId)) {
+                if (alert(humanFormattedOffset + " /gl " + flagId)) {
                     flags.incrementAndGet(); // This debug was sent somewhere
                     predictionComplete.setIdentifier(flagId);
                 }
