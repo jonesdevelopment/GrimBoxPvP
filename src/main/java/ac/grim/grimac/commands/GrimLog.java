@@ -80,5 +80,4 @@ public class GrimLog extends BaseCommand {
             urlConn.disconnect();
         }
     }
-
 }

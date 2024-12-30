@@ -35,7 +35,7 @@ public class GrimSpectate extends BaseCommand {
             return;
         }
 
-        //hide player from tab list
+        // hide player from tab list
         if (GrimAPI.INSTANCE.getSpectateManager().enable(player)) {
             GrimPlayer grimPlayer = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(player);
             if (grimPlayer != null) {

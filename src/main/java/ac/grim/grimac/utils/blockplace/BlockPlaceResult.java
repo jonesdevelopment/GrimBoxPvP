@@ -24,7 +24,6 @@ import com.github.retrooper.packetevents.util.Vector3i;
 import org.bukkit.util.Vector;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public enum BlockPlaceResult {
 
@@ -375,7 +374,7 @@ public enum BlockPlaceResult {
             place.set();
         }
     }, ItemTypes.values().stream().filter(mat -> mat.getName().getKey().contains("candle_cake"))
-            .collect(Collectors.toList()).toArray(new ItemType[0])),
+            .toList().toArray(new ItemType[0])),
 
     PISTON_BASE((player, place) -> {
         WrappedBlockState piston = place.getMaterial().createBlockState(CompensatedWorld.blockVersion);

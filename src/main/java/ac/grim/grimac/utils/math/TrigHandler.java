@@ -20,8 +20,8 @@ public class TrigHandler {
     }
 
     public Vector getVanillaMathMovement(Vector wantedMovement, float f, float f2) {
-        float f3 = VanillaMath.sin(f2 * 0.017453292f);
-        float f4 = VanillaMath.cos(f2 * 0.017453292f);
+        float f3 = VanillaMath.sin(GrimMath.radians(f2));
+        float f4 = VanillaMath.cos(GrimMath.radians(f2));
 
         float bestTheoreticalX = (float) (f3 * wantedMovement.getZ() + f4 * wantedMovement.getX()) / (f3 * f3 + f4 * f4) / f;
         float bestTheoreticalZ = (float) (-f3 * wantedMovement.getX() + f4 * wantedMovement.getZ()) / (f3 * f3 + f4 * f4) / f;
@@ -30,8 +30,8 @@ public class TrigHandler {
     }
 
     public Vector getShitMathMovement(Vector wantedMovement, float f, float f2) {
-        float f3 = player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_8) ? OptifineFastMath.sin(f2 * 0.017453292f) : LegacyFastMath.sin(f2 * 0.017453292f);
-        float f4 = player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_8) ? OptifineFastMath.cos(f2 * 0.017453292f) : LegacyFastMath.cos(f2 * 0.017453292f);
+        float f3 = player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_8) ? OptifineFastMath.sin(GrimMath.radians(f2)) : LegacyFastMath.sin(GrimMath.radians(f2));
+        float f4 = player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_8) ? OptifineFastMath.cos(GrimMath.radians(f2)) : LegacyFastMath.cos(GrimMath.radians(f2));
 
         float bestTheoreticalX = (float) (f3 * wantedMovement.getZ() + f4 * wantedMovement.getX()) / (f3 * f3 + f4 * f4) / f;
         float bestTheoreticalZ = (float) (-f3 * wantedMovement.getX() + f4 * wantedMovement.getZ()) / (f3 * f3 + f4 * f4) / f;

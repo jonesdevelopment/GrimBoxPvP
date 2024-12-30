@@ -29,7 +29,7 @@ public class GrimDump extends BaseCommand {
                     .replace("%url%", link)));
             return;
         }
-        //TODO: change this back to application/json once allowed
+        // TODO: change this back to application/json once allowed
         GrimLog.sendLogAsync(sender, generateDump(), string -> link = string, "text/yaml");
     }
 
@@ -84,5 +84,4 @@ public class GrimDump extends BaseCommand {
             return false;
         }
     }
-
 }

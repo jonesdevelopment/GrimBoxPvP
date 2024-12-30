@@ -135,7 +135,7 @@ public class MovementTicker {
         // By running fluid pushing for the player
         final PacketEntity riding = player.compensatedEntities.getSelf().getRiding();
         if (!player.wasTouchingWater && (riding == null || !riding.isBoat())) {
-            new PlayerBaseTick(player).updateInWaterStateAndDoWaterCurrentPushing();
+            PlayerBaseTick.updateInWaterStateAndDoWaterCurrentPushing(player);
         }
 
         if (player.onGround) {

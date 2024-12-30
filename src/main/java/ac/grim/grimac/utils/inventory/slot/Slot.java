@@ -48,9 +48,7 @@ public class Slot {
 
     public ItemStack safeTake(int p_150648_, int p_150649_, GrimPlayer p_150650_) {
         Optional<ItemStack> optional = this.tryRemove(p_150648_, p_150649_, p_150650_);
-        optional.ifPresent((p_150655_) -> {
-            this.onTake(p_150650_, p_150655_);
-        });
+        optional.ifPresent((p_150655_) -> this.onTake(p_150650_, p_150655_));
         return optional.orElse(ItemStack.EMPTY);
     }
 
@@ -85,10 +83,8 @@ public class Slot {
                 itemstack.grow(i);
                 this.set(itemstack);
             }
-            return stack;
-        } else {
-            return stack;
         }
+        return stack;
     }
 
     public ItemStack remove(int p_40227_) {

@@ -1,4 +1,4 @@
-package ac.grim.grimac.checks.impl.movement;
+package ac.grim.grimac.checks.impl.timer;
 
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
@@ -22,12 +22,16 @@ public class TickTimer extends Check implements PostPredictionCheck {
     public void onPacketReceive(PacketReceiveEvent event) {
         if (!player.supportsEndTick()) return;
         if (isFlying(event.getPacketType()) && !player.packetStateData.lastPacketWasTeleport) {
-            if (!receivedTickEnd) flagAndAlert("type=flying, packets=" + flyingPackets);
+            if (!receivedTickEnd && flagWithSetback()) {
+                alert("type=flying, packets=" + flyingPackets);
+            }
             receivedTickEnd = false;
             flyingPackets++;
         } else if (event.getPacketType() == PacketType.Play.Client.CLIENT_TICK_END) {
             receivedTickEnd = true;
-            if (flyingPackets > 1) flagAndAlert("type=end, packets=" + flyingPackets);
+            if (flyingPackets > 1 && flagWithSetback()) {
+                alert("type=end, packets=" + flyingPackets);
+            }
             flyingPackets = 0;
         }
     }

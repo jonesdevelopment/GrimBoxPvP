@@ -1,6 +1,6 @@
 package ac.grim.grimac.utils.data.packetentity;
 
-import ac.grim.grimac.checks.impl.movement.SprintD;
+import ac.grim.grimac.checks.impl.sprint.SprintD;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.attribute.ValuedAttribute;

@@ -1,25 +1,24 @@
-package ac.grim.grimac.checks.impl.movement;
+package ac.grim.grimac.checks.impl.sprint;
 
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
+import ac.grim.grimac.utils.enums.FluidTag;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 
-@CheckData(name = "NoSlowD", description = "Sprinting while using an item", setback = 5, experimental = true)
-public class SprintC extends Check implements PostPredictionCheck {
-    public SprintC(GrimPlayer player) {
+@CheckData(name = "SprintB", description = "Sprinting while sneaking", setback = 5, experimental = true)
+public class SprintB extends Check implements PostPredictionCheck {
+    public SprintB(GrimPlayer player) {
         super(player);
     }
-
-    private boolean flaggedLastTick = false;
 
     @Override
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
         if (!predictionComplete.isChecked()) return;
 
-        if (player.packetStateData.isSlowedByUsingItem()) {
+        if (player.isSlowMovement && player.sneakingSpeedMultiplier < 0.8f) {
             ClientVersion client = player.getClientVersion();
 
             // https://bugs.mojang.com/browse/MC-152728
@@ -27,13 +26,9 @@ public class SprintC extends Check implements PostPredictionCheck {
                 return;
             }
 
-            if (player.isSprinting && (!player.isSwimming || client.isOlderThan(ClientVersion.V_1_21_4))) {
-                if (flaggedLastTick && flagWithSetback()) alert("");
-                flaggedLastTick = true;
-            } else {
-                reward();
-                flaggedLastTick = false;
-            }
+            if (player.isSprinting && !player.isSwimming && (player.fluidOnEyes != FluidTag.WATER || client.isOlderThan(ClientVersion.V_1_21_4))) {
+                if (flagWithSetback()) alert("");
+            } else reward();
         }
     }
 }

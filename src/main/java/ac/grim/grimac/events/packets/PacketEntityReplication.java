@@ -315,7 +315,6 @@ public class PacketEntityReplication extends Check implements PacketCheck {
                     if (vehicleID == -1) { // Dismounting
                         vehicleID = trackerData.getLegacyPointEightMountedUpon();
                         handleMountVehicle(event, vehicleID, new int[]{}); // The vehicle is empty
-                        return;
                     } else { // Mounting
                         trackerData.setLegacyPointEightMountedUpon(vehicleID);
                         handleMountVehicle(event, vehicleID, new int[]{attachID});

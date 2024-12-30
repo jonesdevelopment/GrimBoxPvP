@@ -57,6 +57,7 @@ public class GrimVersion extends BaseCommand {
     }
 
     // Using UserAgent format recommended by https://docs.modrinth.com/api/
+    @SuppressWarnings("deprecation")
     private static void checkForUpdates(CommandSender sender) {
         String current = GrimAPI.INSTANCE.getExternalAPI().getGrimVersion();
         try {
@@ -77,7 +78,8 @@ public class GrimVersion extends BaseCommand {
                 LogUtil.error("Failed to check latest GrimAC version. Response code: " + response.statusCode());
                 return;
             }
-            JsonObject object = JsonParser.parseString(response.body()).getAsJsonArray().get(0).getAsJsonObject();
+            // Using old JsonParser method, as old versions of Gson don't include the static one
+            JsonObject object = new JsonParser().parse(response.body()).getAsJsonArray().get(0).getAsJsonObject();
             String latest = object.get("version_number").getAsString();
             Status status = compareVersions(current, latest);
             Component msg = switch (status) {

@@ -4,6 +4,7 @@ package ac.grim.grimac.utils.nmsutil;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.Pair;
+import ac.grim.grimac.utils.math.GrimMath;
 import ac.grim.grimac.utils.math.VectorUtils;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
@@ -21,29 +22,12 @@ public class ReachUtils {
 
         BlockFace bestFace = null;
 
-        if (!isVecInYZ(self, minX)) {
-            minX = null;
-        }
-
-        if (!isVecInYZ(self, maxX)) {
-            maxX = null;
-        }
-
-        if (!isVecInXZ(self, minY)) {
-            minY = null;
-        }
-
-        if (!isVecInXZ(self, maxY)) {
-            maxY = null;
-        }
-
-        if (!isVecInXY(self, minZ)) {
-            minZ = null;
-        }
-
-        if (!isVecInXY(self, maxZ)) {
-            maxZ = null;
-        }
+        if (!isVecInYZ(self, minX)) minX = null;
+        if (!isVecInYZ(self, maxX)) maxX = null;
+        if (!isVecInXZ(self, minY)) minY = null;
+        if (!isVecInXZ(self, maxY)) maxY = null;
+        if (!isVecInXY(self, minZ)) minZ = null;
+        if (!isVecInXY(self, maxZ)) maxZ = null;
 
         Vector best = null;
 
@@ -85,15 +69,15 @@ public class ReachUtils {
      * passed in vector, or null if not possible.
      */
     public static Vector getIntermediateWithXValue(Vector self, Vector other, double x) {
-        double d0 = other.getX() - self.getX();
-        double d1 = other.getY() - self.getY();
-        double d2 = other.getZ() - self.getZ();
+        double deltaX = other.getX() - self.getX();
+        double deltaY = other.getY() - self.getY();
+        double deltaZ = other.getZ() - self.getZ();
 
-        if (d0 * d0 < 1.0000000116860974E-7D) {
+        if (deltaX * deltaX < 1.0000000116860974E-7D) {
             return null;
         } else {
-            double d3 = (x - self.getX()) / d0;
-            return d3 >= 0.0D && d3 <= 1.0D ? new Vector(self.getX() + d0 * d3, self.getY() + d1 * d3, self.getZ() + d2 * d3) : null;
+            double d3 = (x - self.getX()) / deltaX;
+            return d3 >= 0.0D && d3 <= 1.0D ? new Vector(self.getX() + deltaX * d3, self.getY() + deltaY * d3, self.getZ() + deltaZ * d3) : null;
         }
     }
 
@@ -102,15 +86,15 @@ public class ReachUtils {
      * passed in vector, or null if not possible.
      */
     public static Vector getIntermediateWithYValue(Vector self, Vector other, double y) {
-        double d0 = other.getX() - self.getX();
-        double d1 = other.getY() - self.getY();
-        double d2 = other.getZ() - self.getZ();
+        double deltaX = other.getX() - self.getX();
+        double deltaY = other.getY() - self.getY();
+        double deltaZ = other.getZ() - self.getZ();
 
-        if (d1 * d1 < 1.0000000116860974E-7D) {
+        if (deltaY * deltaY < 1.0000000116860974E-7D) {
             return null;
         } else {
-            double d3 = (y - self.getY()) / d1;
-            return d3 >= 0.0D && d3 <= 1.0D ? new Vector(self.getX() + d0 * d3, self.getY() + d1 * d3, self.getZ() + d2 * d3) : null;
+            double d3 = (y - self.getY()) / deltaY;
+            return d3 >= 0.0D && d3 <= 1.0D ? new Vector(self.getX() + deltaX * d3, self.getY() + deltaY * d3, self.getZ() + deltaZ * d3) : null;
         }
     }
 
@@ -119,15 +103,15 @@ public class ReachUtils {
      * passed in vector, or null if not possible.
      */
     public static Vector getIntermediateWithZValue(Vector self, Vector other, double z) {
-        double d0 = other.getX() - self.getX();
-        double d1 = other.getY() - self.getY();
-        double d2 = other.getZ() - self.getZ();
+        double deltaX = other.getX() - self.getX();
+        double deltaY = other.getY() - self.getY();
+        double deltaZ = other.getZ() - self.getZ();
 
-        if (d2 * d2 < 1.0000000116860974E-7D) {
+        if (deltaZ * deltaZ < 1.0000000116860974E-7D) {
             return null;
         } else {
-            double d3 = (z - self.getZ()) / d2;
-            return d3 >= 0.0D && d3 <= 1.0D ? new Vector(self.getX() + d0 * d3, self.getY() + d1 * d3, self.getZ() + d2 * d3) : null;
+            double d3 = (z - self.getZ()) / deltaZ;
+            return d3 >= 0.0D && d3 <= 1.0D ? new Vector(self.getX() + deltaX * d3, self.getY() + deltaY * d3, self.getZ() + deltaZ * d3) : null;
         }
     }
 
@@ -155,14 +139,14 @@ public class ReachUtils {
     // Look vector accounting for optifine FastMath, and client version differences
     public static Vector getLook(GrimPlayer player, float yaw, float pitch) {
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_12_2)) {
-            float f = player.trigHandler.cos(-yaw * 0.017453292F - (float)Math.PI);
-            float f1 = player.trigHandler.sin(-yaw * 0.017453292F - (float)Math.PI);
-            float f2 = -player.trigHandler.cos(-pitch * 0.017453292F);
-            float f3 = player.trigHandler.sin(-pitch * 0.017453292F);
+            float f = player.trigHandler.cos(GrimMath.radians(-yaw) - (float) Math.PI);
+            float f1 = player.trigHandler.sin(GrimMath.radians(-yaw) - (float) Math.PI);
+            float f2 = -player.trigHandler.cos(GrimMath.radians(-pitch));
+            float f3 = player.trigHandler.sin(GrimMath.radians(-pitch));
             return new Vector(f1 * f2, f3, f * f2);
         } else {
-            float f = pitch * ((float) Math.PI / 180F);
-            float f1 = -yaw * ((float) Math.PI / 180F);
+            float f = GrimMath.radians(pitch);
+            float f1 = GrimMath.radians(-yaw);
             float f2 = player.trigHandler.cos(f1);
             float f3 = player.trigHandler.sin(f1);
             float f4 = player.trigHandler.cos(f);
@@ -176,7 +160,7 @@ public class ReachUtils {
     }
 
     public static double getMinReachToBox(GrimPlayer player, SimpleCollisionBox targetBox) {
-        boolean giveMovementThresholdLenience = !player.packetStateData.didLastMovementIncludePosition || player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9);
+        boolean giveMovementThresholdLenience = !player.packetStateData.didLastMovementIncludePosition || player.canSkipTicks();
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8)) targetBox.expand(0.1);
 
         double lowest = Double.MAX_VALUE;

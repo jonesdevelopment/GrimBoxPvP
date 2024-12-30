@@ -7,6 +7,8 @@ import ac.grim.grimac.checks.impl.aim.AimRoundedX;
 import ac.grim.grimac.checks.impl.aim.AimRoundedY;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.badpackets.*;
+import ac.grim.grimac.checks.impl.breaking.*;
+import ac.grim.grimac.checks.impl.combat.Hitboxes;
 import ac.grim.grimac.checks.impl.combat.MultiInteractA;
 import ac.grim.grimac.checks.impl.combat.MultiInteractB;
 import ac.grim.grimac.checks.impl.combat.Reach;
@@ -18,7 +20,6 @@ import ac.grim.grimac.checks.impl.exploit.ExploitC;
 import ac.grim.grimac.checks.impl.groundspoof.NoFall;
 import ac.grim.grimac.checks.impl.inventory.*;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
-import ac.grim.grimac.checks.impl.breaking.FastBreak;
 import ac.grim.grimac.checks.impl.misc.GhostBlockMitigation;
 import ac.grim.grimac.checks.impl.misc.TransactionOrder;
 import ac.grim.grimac.checks.impl.movement.*;
@@ -29,6 +30,11 @@ import ac.grim.grimac.checks.impl.prediction.GroundSpoof;
 import ac.grim.grimac.checks.impl.prediction.OffsetHandler;
 import ac.grim.grimac.checks.impl.prediction.Phase;
 import ac.grim.grimac.checks.impl.scaffolding.*;
+import ac.grim.grimac.checks.impl.sprint.*;
+import ac.grim.grimac.checks.impl.timer.NegativeTimer;
+import ac.grim.grimac.checks.impl.timer.TickTimer;
+import ac.grim.grimac.checks.impl.timer.Timer;
+import ac.grim.grimac.checks.impl.timer.VehicleTimer;
 import ac.grim.grimac.checks.impl.velocity.ExplosionHandler;
 import ac.grim.grimac.checks.impl.velocity.KnockbackHandler;
 import ac.grim.grimac.checks.type.*;
@@ -73,6 +79,7 @@ public class CheckManager {
     public CheckManager(GrimPlayer player) {
         // Include post checks in the packet check too
         packetChecks = new ImmutableClassToInstanceMap.Builder<PacketCheck>()
+                .put(Hitboxes.class, new Hitboxes(player))
                 .put(Reach.class, new Reach(player))
                 .put(PacketEntityReplication.class, new PacketEntityReplication(player))
                 .put(PacketChangeGameState.class, new PacketChangeGameState(player))
@@ -138,7 +145,7 @@ public class CheckManager {
                 .build();
 
         postPredictionCheck = new ImmutableClassToInstanceMap.Builder<PostPredictionCheck>()
-                .put(NegativeTimerCheck.class, new NegativeTimerCheck(player))
+                .put(NegativeTimer.class, new NegativeTimer(player))
                 .put(ExplosionHandler.class, new ExplosionHandler(player))
                 .put(KnockbackHandler.class, new KnockbackHandler(player))
                 .put(GhostBlockDetector.class, new GhostBlockDetector(player))
@@ -151,6 +158,7 @@ public class CheckManager {
                 .put(EntityControl.class, new EntityControl(player))
                 .put(InventoryA.class, new InventoryA(player))
                 .put(InventoryB.class, new InventoryB(player))
+                .put(BadPacketsX.class, new BadPacketsX(player))
                 .put(NoSlow.class, new NoSlow(player))
                 .put(SprintB.class, new SprintB(player))
                 .put(SprintC.class, new SprintC(player))
@@ -179,7 +187,7 @@ public class CheckManager {
                 .build();
 
         prePredictionChecks = new ImmutableClassToInstanceMap.Builder<PacketCheck>()
-                .put(TimerCheck.class, new TimerCheck(player))
+                .put(Timer.class, new Timer(player))
                 .put(TickTimer.class, new TickTimer(player))
                 .put(CrashA.class, new CrashA(player))
                 .put(CrashB.class, new CrashB(player))
@@ -196,9 +204,13 @@ public class CheckManager {
                 .build();
 
         blockBreakChecks = new ImmutableClassToInstanceMap.Builder<BlockBreakCheck>()
-                .put(BadPacketsX.class, new BadPacketsX(player))
-                .put(BadPacketsZ.class, new BadPacketsZ(player))
+                .put(AirLiquidBreak.class, new AirLiquidBreak(player))
+                .put(WrongBreak.class, new WrongBreak(player))
                 .put(FastBreak.class, new FastBreak(player))
+                .put(MultiBreak.class, new MultiBreak(player))
+                .put(NoSwingBreak.class, new NoSwingBreak(player))
+                .put(FarBreak.class, new FarBreak(player))
+                .put(InvalidBreak.class, new InvalidBreak(player))
                 .build();
 
         allChecks = new ImmutableClassToInstanceMap.Builder<AbstractCheck>()

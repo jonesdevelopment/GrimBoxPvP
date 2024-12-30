@@ -80,14 +80,14 @@ public class OffsetCollisionBox extends SimpleCollisionBox {
                 return super.offset(x, y, z);
             case XZ:
                 l = GrimMath.hashCode(x, 0, z);
-                offsetX = GrimMath.clamp(((double)((float)(l & 15L) / 15.0F) - 0.5) * 0.5, (double)(-maxHorizontalModelOffset), (double)maxHorizontalModelOffset);
-                offsetZ = GrimMath.clamp(((double)((float)(l >> 8 & 15L) / 15.0F) - 0.5) * 0.5, (double)(-maxHorizontalModelOffset), (double)maxHorizontalModelOffset);
+                offsetX = GrimMath.clamp(((double)((float)(l & 15L) / 15.0F) - 0.5) * 0.5, -maxHorizontalModelOffset, maxHorizontalModelOffset);
+                offsetZ = GrimMath.clamp(((double)((float)(l >> 8 & 15L) / 15.0F) - 0.5) * 0.5, -maxHorizontalModelOffset, maxHorizontalModelOffset);
                 return super.offset(x + offsetX, y, z + offsetZ);
             case XYZ:
                 l = GrimMath.hashCode(x, 0, z);
                 offsetY = ((double)((float)(l >> 4 & 15L) / 15.0F) - 1.0) * (double) maxVerticalModelOffset;
-                offsetX = GrimMath.clamp(((double)((float)(l & 15L) / 15.0F) - 0.5) * 0.5, (double)(-maxHorizontalModelOffset), (double)maxHorizontalModelOffset);
-                offsetZ = GrimMath.clamp(((double)((float)(l >> 8 & 15L) / 15.0F) - 0.5) * 0.5, (double)(-maxHorizontalModelOffset), (double)maxHorizontalModelOffset);
+                offsetX = GrimMath.clamp(((double)((float)(l & 15L) / 15.0F) - 0.5) * 0.5, -maxHorizontalModelOffset, maxHorizontalModelOffset);
+                offsetZ = GrimMath.clamp(((double)((float)(l >> 8 & 15L) / 15.0F) - 0.5) * 0.5, -maxHorizontalModelOffset, maxHorizontalModelOffset);
                 return super.offset(x + offsetX, offsetY, z + offsetZ);
         }
         // You *really* shouldn't be using this class if offsetType = null

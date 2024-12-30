@@ -104,9 +104,7 @@ public class PacketWorldBorder extends Check implements PacketCheck {
     }
 
     private void setAbsoluteMaxSize(double absoluteMaxSize) {
-        player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> {
-            this.absoluteMaxSize = absoluteMaxSize;
-        });
+        player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> this.absoluteMaxSize = absoluteMaxSize);
     }
 
     public double getAbsoluteMaxSize() {

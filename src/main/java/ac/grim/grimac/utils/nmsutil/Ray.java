@@ -2,9 +2,11 @@ package ac.grim.grimac.utils.nmsutil;
 
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.data.Pair;
+import lombok.Getter;
 import org.bukkit.util.Vector;
 
 // Copied directly from Hawk
+@Getter
 public class Ray implements Cloneable {
 
     private Vector origin;
@@ -65,13 +67,5 @@ public class Ray implements Cloneable {
         Vector c2 = other.origin.clone().add(other.direction.clone().multiply(origin.clone().subtract(other.origin).dot(n1) / other.direction.dot(n1)));
 
         return new Pair<>(c1, c2);
-    }
-
-    public Vector getOrigin() {
-        return origin;
-    }
-
-    public Vector calculateDirection() {
-        return direction;
     }
 }

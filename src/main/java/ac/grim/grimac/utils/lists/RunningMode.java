@@ -3,6 +3,7 @@ package ac.grim.grimac.utils.lists;
 import ac.grim.grimac.utils.data.Pair;
 import it.unimi.dsi.fastutil.doubles.Double2IntMap;
 import it.unimi.dsi.fastutil.doubles.Double2IntOpenHashMap;
+import lombok.Getter;
 
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -13,6 +14,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class RunningMode {
     Queue<Double> addList;
     Double2IntMap popularityMap = new Double2IntOpenHashMap();
+    @Getter
     int maxSize;
 
     private static final double threshold = 1e-3;
@@ -25,10 +27,6 @@ public class RunningMode {
 
     public int size() {
         return addList.size();
-    }
-
-    public int getMaxSize() {
-        return maxSize;
     }
 
     public void add(double value) {

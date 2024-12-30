@@ -52,7 +52,6 @@ public class BlockProperties {
         return player.lastSprintingForSpeed ? (float) ((double) 0.02f + 0.005999999865889549D) : 0.02f;
     }
 
-
     /**
      * This is used for falling onto a block (We care if there is a bouncy block)
      * This is also used for striders checking if they are on lava

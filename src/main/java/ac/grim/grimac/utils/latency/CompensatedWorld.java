@@ -278,13 +278,13 @@ public class CompensatedWorld {
         int offsetY = y - minHeight;
 
         if (column != null) {
-            if (column.getChunks().length <= (offsetY >> 4) || (offsetY >> 4) < 0) return;
+            if (column.chunks().length <= (offsetY >> 4) || (offsetY >> 4) < 0) return;
 
-            BaseChunk chunk = column.getChunks()[offsetY >> 4];
+            BaseChunk chunk = column.chunks()[offsetY >> 4];
 
             if (chunk == null) {
                 chunk = create();
-                column.getChunks()[offsetY >> 4] = chunk;
+                column.chunks()[offsetY >> 4] = chunk;
 
                 // Sets entire chunk to air
                 // This glitch/feature occurs due to the palette size being 0 when we first create a chunk section
@@ -441,9 +441,9 @@ public class CompensatedWorld {
             Column column = getChunk(x >> 4, z >> 4);
 
             y -= minHeight;
-            if (column == null || y < 0 || (y >> 4) >= column.getChunks().length) return airData;
+            if (column == null || y < 0 || (y >> 4) >= column.chunks().length) return airData;
 
-            BaseChunk chunk = column.getChunks()[y >> 4];
+            BaseChunk chunk = column.chunks()[y >> 4];
             if (chunk != null) {
                 return chunk.get(blockVersion, x & 0xF, y & 0xF, z & 0xF);
             }

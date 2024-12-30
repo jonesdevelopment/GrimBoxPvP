@@ -38,7 +38,7 @@ public class AirLiquidPlace extends BlockPlaceCheck {
      * And in even more rare cases:
      *     Async world updated: air -> air at X: -51, Y: 71, Z: -179, tick 0, cause: handleNettySyncTransaction(LatencyUtils.java:56) source: PacketType.Play.Client.PONG
      *     AirLiquidPlace Check: Block state at X: -49, Y: 70, Z: -180 is short_grass (valid=true), tick 0
-     *     Async world updated: short_grass -> air at X: -49, Y: 70, Z: -180, tick 1, cause/source: DiggingAction.START_DIGGING <--- double dig here (see my BadPacketsX patch) this is legit behaviour. Can only be up to 2 in 1 tick though.
+     *     Async world updated: short_grass -> air at X: -49, Y: 70, Z: -180, tick 1, cause/source: DiggingAction.START_DIGGING <--- double dig here (see my AirLiquidBreak patch) this is legit behaviour. Can only be up to 2 in 1 tick though.
      *     Async world updated: air -> short_grass at X: -49, Y: 70, Z: -180, tick 1, cause/source: DiggingAction.START_DIGGING
      *     Async world updated: short_grass -> air at X: -51, Y: 70, Z: -179, tick 1, cause: realtime task in applyBlockChanges(List<Vector3i> toApplyBlocks) source: PacketType.Play.Client.PONG
      *     AirLiquidPlace Check: Block state at X: -49, Y: 70, Z: -179 is air (valid=false), tick 2 <--- falses here due to double dig if we only check the latest changed blockstate. We have to check all changes at the location in same tick.
@@ -64,14 +64,14 @@ public class AirLiquidPlace extends BlockPlaceCheck {
         int currentTick = GrimAPI.INSTANCE.getTickManager().currentTick;
         // this is actual more lenient then we need to be, We can check up to 1 ticks for all changes at location sand up to 0 ticks for first change
         // But for such tiny differences in legitness its not worth it.
-        Iterable<BlockModification> blockModifications = player.blockHistory.getRecentModifications((blockModification) -> currentTick - blockModification.getTick() < 2
-                && blockPos.equals(blockModification.getLocation())
-                && (blockModification.getCause() == BlockModification.Cause.START_DIGGING || blockModification.getCause() == BlockModification.Cause.HANDLE_NETTY_SYNC_TRANSACTION));
+        Iterable<BlockModification> blockModifications = player.blockHistory.getRecentModifications((blockModification) -> currentTick - blockModification.tick() < 2
+                && blockPos.equals(blockModification.location())
+                && (blockModification.cause() == BlockModification.Cause.START_DIGGING || blockModification.cause() == BlockModification.Cause.HANDLE_NETTY_SYNC_TRANSACTION));
 
         // Check if old block from instant breaking in same tick as the current placement was valid
         // There should only be one block here for legit clients
         for (BlockModification blockModification : blockModifications) {
-            StateType stateType = blockModification.getOldBlockContents().getType();
+            StateType stateType = blockModification.oldBlockContents().getType();
             if (!stateType.isAir() && !Materials.isNoPlaceLiquid(stateType)) {
                 return;
             }

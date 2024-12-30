@@ -1,4 +1,4 @@
-package ac.grim.grimac.checks.impl.badpackets;
+package ac.grim.grimac.checks.impl.breaking;
 
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
@@ -14,9 +14,9 @@ import com.github.retrooper.packetevents.util.Vector3i;
 
 import static ac.grim.grimac.utils.nmsutil.BlockBreakSpeed.getBlockDamage;
 
-@CheckData(name = "BadPacketsZ")
-public class BadPacketsZ extends Check implements BlockBreakCheck {
-    public BadPacketsZ(final GrimPlayer player) {
+@CheckData(name = "WrongBreak")
+public class WrongBreak extends Check implements BlockBreakCheck {
+    public WrongBreak(final GrimPlayer player) {
         super(player);
     }
 

@@ -1,6 +1,7 @@
 package ac.grim.grimac.utils.nmsutil;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.utils.math.GrimMath;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.item.enchantment.type.EnchantmentTypes;
@@ -23,11 +24,11 @@ public class Riptide {
 
         float f7 = player.xRot;
         float f = player.yRot;
-        float f1 = -player.trigHandler.sin(f7 * ((float) Math.PI / 180F)) * player.trigHandler.cos(f * ((float) Math.PI / 180F));
-        float f2 = -player.trigHandler.sin(f * ((float) Math.PI / 180F));
-        float f3 = player.trigHandler.cos(f7 * ((float) Math.PI / 180F)) * player.trigHandler.cos(f * ((float) Math.PI / 180F));
+        float f1 = -player.trigHandler.sin(GrimMath.radians(f7)) * player.trigHandler.cos(GrimMath.radians(f));
+        float f2 = -player.trigHandler.sin(GrimMath.radians(f));
+        float f3 = player.trigHandler.cos(GrimMath.radians(f7)) * player.trigHandler.cos(GrimMath.radians(f));
         float f4 = (float) Math.sqrt(f1 * f1 + f2 * f2 + f3 * f3);
-        float f5 = 3.0F * ((1.0F + j) / 4.0F);
+        float f5 = 3f * ((1f + j) / 4f);
         f1 = f1 * (f5 / f4);
         f2 = f2 * (f5 / f4);
         f3 = f3 * (f5 / f4);

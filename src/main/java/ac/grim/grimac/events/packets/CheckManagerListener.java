@@ -36,6 +36,7 @@ import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
+import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateValue;
@@ -268,9 +269,10 @@ public class CheckManagerListener extends PacketListenerAbstract {
 
                 // Right-clicking a trapdoor/door/etc.
                 StateType placedAgainst = blockPlace.getPlacedAgainstMaterial();
-                if ((player.getClientVersion().isOlderThan(ClientVersion.V_1_8) && (placedAgainst == StateTypes.IRON_TRAPDOOR || placedAgainst == StateTypes.IRON_DOOR))
+                if (player.getClientVersion().isOlderThan(ClientVersion.V_1_11) && (placedAgainst == StateTypes.IRON_TRAPDOOR
+                        || placedAgainst == StateTypes.IRON_DOOR || BlockTags.FENCES.contains(placedAgainst))
+                        || player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8) && BlockTags.CAULDRONS.contains(placedAgainst)
                         || Materials.isClientSideInteractable(placedAgainst)) {
-
                     if (!player.compensatedEntities.getSelf().inVehicle()) {
                         player.checkManager.onPostFlyingBlockPlace(blockPlace);
                     }
@@ -292,12 +294,10 @@ public class CheckManagerListener extends PacketListenerAbstract {
         }
 
         if (packet instanceof WrapperPlayClientPlayerBlockPlacement place) {
-            Vector3i blockPosition = place.getBlockPosition();
-            BlockFace face = place.getFace();
-
-
             if (player.gamemode == GameMode.SPECTATOR || player.gamemode == GameMode.ADVENTURE) return;
 
+            Vector3i blockPosition = place.getBlockPosition();
+            BlockFace face = place.getFace();
             ItemStack placedWith = player.getInventory().getHeldItem();
             if (place.getHand() == InteractionHand.OFF_HAND) {
                 placedWith = player.getInventory().getOffHand();
@@ -457,7 +457,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
             final DiggingAction action = packet.getAction();
 
             if (action == DiggingAction.START_DIGGING || action == DiggingAction.FINISHED_DIGGING || action == DiggingAction.CANCELLED_DIGGING) {
-                final BlockBreak blockBreak = new BlockBreak(packet.getBlockPosition(), packet.getBlockFace(), action, player.compensatedWorld.getWrappedBlockStateAt(packet.getBlockPosition()));
+                final BlockBreak blockBreak = new BlockBreak(packet.getBlockPosition(), packet.getBlockFace(), packet.getBlockFaceId(), action, player.compensatedWorld.getWrappedBlockStateAt(packet.getBlockPosition()));
 
                 player.checkManager.onBlockBreak(blockBreak);
 

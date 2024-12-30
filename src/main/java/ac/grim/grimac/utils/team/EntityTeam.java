@@ -12,8 +12,8 @@ import java.util.Set;
 public final class EntityTeam {
 
     private final GrimPlayer player;
-    @Getter private final String name;
-    @Getter private final Set<String> entries = new HashSet<>();
+    public final String name;
+    public final Set<String> entries = new HashSet<>();
     @Getter private WrapperPlayServerTeams.CollisionRule collisionRule;
 
     public EntityTeam(GrimPlayer player, String name) {
@@ -58,13 +58,11 @@ public final class EntityTeam {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof EntityTeam)) return false;
-        return Objects.equals(getName(), ((EntityTeam) o).getName());
+        return this == o || o instanceof EntityTeam t && Objects.equals(name, t.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName());
+        return Objects.hash(name);
     }
 }

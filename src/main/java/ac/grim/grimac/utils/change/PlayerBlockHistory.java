@@ -31,7 +31,7 @@ public class PlayerBlockHistory {
      * @param maxTick The maximum tick age to keep
      */
     public void cleanup(int maxTick) {
-        while (!blockHistory.isEmpty() && maxTick - blockHistory.peekFirst().getTick() > 0) {
+        while (!blockHistory.isEmpty() && maxTick - blockHistory.peekFirst().tick() > 0) {
             blockHistory.removeFirst();
         }
     }

@@ -173,7 +173,6 @@ public class CompensatedInventory extends Check implements PacketCheck {
             case FEET -> getBoots();
             case OFFHAND -> getOffHand();
             case MAINHAND -> getHeldItem();
-            default -> ItemStack.EMPTY;
         };
     }
 

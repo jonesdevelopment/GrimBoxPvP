@@ -42,9 +42,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BlockPlace {
-    protected static final BlockFace[] UPDATE_SHAPE_ORDER = new BlockFace[]{BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN, BlockFace.UP};
-    private static final BlockFace[] BY_2D = new BlockFace[]{BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST};
-    static final BlockFace[] BY_3D = new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
+    protected static final BlockFace[] UPDATE_SHAPE_ORDER = { BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN, BlockFace.UP };
+    private static final BlockFace[] BY_2D = { BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST };
+    static final BlockFace[] BY_3D = { BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST };
     @Setter
     Vector3i blockPosition;
     @Getter
@@ -52,6 +52,7 @@ public class BlockPlace {
     @Getter
     @Setter
     boolean replaceClicked;
+    @Getter
     boolean isCancelled = false;
     GrimPlayer player;
     @Getter
@@ -189,6 +190,9 @@ public class BlockPlace {
             if (state.getSouth() == South.FALSE) return true;
             if (state.getEast() == East.FALSE) return true;
             return state.getWest() == West.FALSE;
+        }
+        if (state.getType() == StateTypes.LADDER && player.getClientVersion().isOlderThan(ClientVersion.V_1_13)) {
+            return true;
         }
 
         return baseReplaceable;
@@ -434,7 +438,7 @@ public class BlockPlace {
         return false;
     }
 
-    public BlockFace[] getHorizontalFaces() {
+    public static BlockFace[] getHorizontalFaces() {
         return BY_2D;
     }
 
@@ -524,10 +528,6 @@ public class BlockPlace {
     public boolean isXAxis() {
         BlockFace face = getDirection();
         return face == BlockFace.WEST || face == BlockFace.EAST;
-    }
-
-    public boolean isCancelled() {
-        return isCancelled;
     }
 
     public Vector3i getPlacedBlockPos() {

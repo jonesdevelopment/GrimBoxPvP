@@ -9,15 +9,17 @@ import lombok.Getter;
 public class BlockBreak {
     public final Vector3i position;
     public final BlockFace face;
+    public final int faceId;
     public final DiggingAction action;
     @Getter
     private boolean cancelled;
 
     public final WrappedBlockState block;
 
-    public BlockBreak(Vector3i position, BlockFace face, DiggingAction action, WrappedBlockState block) {
+    public BlockBreak(Vector3i position, BlockFace face, int faceId, DiggingAction action, WrappedBlockState block) {
         this.position = position;
         this.face = face;
+        this.faceId = faceId;
         this.action = action;
         this.block = block;
     }

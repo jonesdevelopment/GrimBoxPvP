@@ -11,7 +11,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 
-@CheckData(name = "BadPacketsH")
+@CheckData(name = "BadPacketsH", description = "Did not swing for attack")
 public class BadPacketsH extends Check implements PacketCheck {
 
     // 1.9 packet order: INTERACT -> ANIMATION

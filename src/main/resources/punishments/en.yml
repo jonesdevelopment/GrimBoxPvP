@@ -61,6 +61,7 @@ Punishments:
       - "Sprint"
       - "MultiActions"
       - "Place"
+      - "Break"
       - "!FastBreak"
       - "TransactionOrder"
       - "Post"

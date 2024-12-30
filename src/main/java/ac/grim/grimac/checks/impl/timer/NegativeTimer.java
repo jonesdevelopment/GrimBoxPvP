@@ -1,4 +1,4 @@
-package ac.grim.grimac.checks.impl.movement;
+package ac.grim.grimac.checks.impl.timer;
 
 import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.CheckData;
@@ -8,9 +8,9 @@ import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 
 @CheckData(name = "NegativeTimer", setback = -1, experimental = true)
-public class NegativeTimerCheck extends TimerCheck implements PostPredictionCheck {
+public class NegativeTimer extends Timer implements PostPredictionCheck {
 
-    public NegativeTimerCheck(GrimPlayer player) {
+    public NegativeTimer(GrimPlayer player) {
         super(player);
         timerBalanceRealTime = System.nanoTime() + clockDrift;
     }

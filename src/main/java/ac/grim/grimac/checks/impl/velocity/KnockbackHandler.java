@@ -78,15 +78,17 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
 
     @NotNull public Pair<VelocityData, Vector> getFutureKnockback() {
         // Chronologically in the future
-        if (firstBreadMap.size() > 0) {
+        if (!firstBreadMap.isEmpty()) {
             VelocityData data = firstBreadMap.peek();
             return new Pair<>(data, data != null ? data.vector : null);
         }
+
         // Less in the future
-        if (lastKnockbackKnownTaken.size() > 0) {
+        if (!lastKnockbackKnownTaken.isEmpty()) {
             VelocityData data = lastKnockbackKnownTaken.peek();
             return new Pair<>(data, data != null ? data.vector : null);
         }
+
         // Uncertain, might be in the future
         if (player.firstBreadKB != null && player.likelyKB == null) {
             VelocityData data = player.firstBreadKB;
