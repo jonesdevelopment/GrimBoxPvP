@@ -2,7 +2,6 @@ package ac.grim.grimac.checks.impl.misc;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.checks.Check;
-import ac.grim.grimac.checks.impl.exploit.ExploitA;
 import ac.grim.grimac.checks.type.PacketCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
@@ -69,7 +68,6 @@ public class ClientBrand extends Check implements PacketCheck {
 
                 brand = new String(minusLength).replace(" (Velocity)", ""); //removes velocity's brand suffix
                 brand = ChatColor.stripColor(brand); //strip color codes from client brand
-                if (player.checkManager.getPrePredictionCheck(ExploitA.class).checkString(brand)) brand = "sent log4j";
                 if (!GrimAPI.INSTANCE.getConfigManager().isIgnoredClient(brand)) {
                     String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-brand-format", "%prefix% &f%player% joined using %brand%");
                     message = MessageUtil.replacePlaceholders(player, message);
