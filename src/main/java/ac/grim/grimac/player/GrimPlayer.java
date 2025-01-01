@@ -98,6 +98,7 @@ public class GrimPlayer implements GrimUser {
     private long transactionPing = 0;
     public long lastTransSent = 0;
     public long lastTransReceived = 0;
+    @Getter
     private long playerClockAtLeast = System.nanoTime();
     public double lastWasClimbing = 0;
     public boolean canSwimHop = false;
@@ -391,7 +392,7 @@ public class GrimPlayer implements GrimUser {
         }
 
         // Were we the ones who sent the packet?
-        return data != null && data.first() == id;
+        return data != null;
     }
 
     public void baseTickAddWaterPushing(Vector vector) {
@@ -453,8 +454,7 @@ public class GrimPlayer implements GrimUser {
                 addTransactionSend(transactionID);
                 user.writePacket(packet);
             }
-        } catch (
-                Exception ignored) { // Fix protocollib + viaversion support by ignoring any errors :) // TODO: Fix this
+        } catch (Exception ignored) { // Fix protocollib + viaversion support by ignoring any errors :) // TODO: Fix this
             // recompile
         }
     }
@@ -640,10 +640,6 @@ public class GrimPlayer implements GrimUser {
         return PacketEvents.getAPI().getPlayerManager().getPing(bukkitPlayer);
     }
 
-    public long getPlayerClockAtLeast() {
-        return playerClockAtLeast;
-    }
-
     public SetbackTeleportUtil getSetbackTeleportUtil() {
         return checkManager.getSetbackUtil();
     }
@@ -796,7 +792,7 @@ public class GrimPlayer implements GrimUser {
     @Override
     public void reload(ConfigManager config) {
         spamThreshold = config.getIntElse("packet-spam-threshold", 100);
-        maxTransactionTime = (int) GrimMath.clamp(config.getIntElse("max-transaction-time", 60), 1, 180);
+        maxTransactionTime = GrimMath.clamp(config.getIntElse("max-transaction-time", 60), 1, 180);
         experimentalChecks = config.getBooleanElse("experimental-checks", false);
         ignoreDuplicatePacketRotation = config.getBooleanElse("ignore-duplicate-packet-rotation", false);
         cancelDuplicatePacket = config.getBooleanElse("cancel-duplicate-packet", true);
