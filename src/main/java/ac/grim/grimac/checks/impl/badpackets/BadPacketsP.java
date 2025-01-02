@@ -39,9 +39,9 @@ public class BadPacketsP extends Check implements PacketCheck {
 
             // TODO: Adjust for containers
             boolean flag = switch (clickType) {
-                case PICKUP, QUICK_MOVE, THROW -> button != 0 && button != 1;
+                case PICKUP, QUICK_MOVE, CLONE -> button > 2 || button < 0;
                 case SWAP -> (button > 8 || button < 0) && button != 40;
-                case CLONE -> button != 2;
+                case THROW -> button != 0 && button != 1;
                 case QUICK_CRAFT -> button == 3 || button == 7 || button > 10 || button < 0;
                 case PICKUP_ALL -> button != 0;
                 case UNKNOWN -> false;
