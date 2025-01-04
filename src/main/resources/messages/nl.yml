@@ -3,6 +3,10 @@ prefix: "&bGrim &8\u00BB"
 
 alerts-enabled: "%prefix% &fMeldingen ingeschakeld"
 alerts-disabled: "%prefix% &fMeldingen uitgeschakeld"
+verbose-enabled: "%prefix% &fVerbose enabled"
+verbose-disabled: "%prefix% &fVerbose disabled"
+brands-enabled: "%prefix% &fBrands enabled"
+brands-disabled: "%prefix% &fBrands disabled"
 client-brand-format: "%prefix% &f%player% is lid geworden met %brand%"
 client-brand-format-spoofed: "%prefix% &f%player% tried to spoof their brand to %brand%"
 client-register-bad-channel: "%prefix% &f%player% registered channel %channel%"
@@ -45,6 +49,7 @@ profile:
 help:
   - "&7======================"
   - "/grim alerts &f- &7Meldingen inschakelen"
+  - "/grim brands &f- &7Toggle brands"
   - "/grim profile <player> &f- &7Bekijk speler info"
   - "/grim help &f- &7Bekijk dit helpbericht"
   - "/grim debug <player> &f- &7Voorspellingsuitvoer ontwikkelaar"

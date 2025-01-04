@@ -68,15 +68,14 @@ public class ClientBrand extends Check implements PacketCheck {
 
                 brand = new String(minusLength).replace(" (Velocity)", ""); //removes velocity's brand suffix
                 brand = ChatColor.stripColor(brand); //strip color codes from client brand
-                if (!GrimAPI.INSTANCE.getConfigManager().isIgnoredClient(brand)) {
+                if (!GrimAPI.INSTANCE.getConfigManager().isIgnoredClient(brand) && !player.bukkitPlayer.hasPermission("grim.brand.exempt")) {
                     String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-brand-format", "%prefix% &f%player% joined using %brand%");
                     message = MessageUtil.replacePlaceholders(player, message);
 
                     Component component = MessageUtil.miniMessage(message);
 
-                    // sendMessage is async safe while broadcast isn't due to adventure
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (player.hasPermission("grim.brand")) {
+                        if (GrimAPI.INSTANCE.getAlertManager().hasBrandsEnabled(player)) {
                             MessageUtil.sendMessage(player, component);
                         }
                     }

@@ -54,8 +54,8 @@ public final class BoundingBoxSize {
         } else if (EntityTypes.STRIDER.equals(type) || EntityTypes.COW.equals(type) || EntityTypes.SHEEP.equals(type) || EntityTypes.MOOSHROOM.equals(type) || EntityTypes.PIG.equals(type) || EntityTypes.LLAMA.equals(type) || EntityTypes.DOLPHIN.equals(type) || EntityTypes.WITHER.equals(type) || EntityTypes.TRADER_LLAMA.equals(type) || EntityTypes.WARDEN.equals(type) || EntityTypes.GOAT.equals(type)) {
             return 0.9f;
         } else if (EntityTypes.PHANTOM.equals(type)) {
-            if (packetEntity instanceof PacketEntitySizeable) {
-                return 0.9f + ((PacketEntitySizeable) packetEntity).size * 0.2f;
+            if (packetEntity instanceof PacketEntitySizeable sizeable) {
+                return 0.9f + sizeable.size * 0.2f;
             }
 
             return 1.5f;
@@ -76,8 +76,8 @@ public final class BoundingBoxSize {
         } else if (EntityTypes.IRON_GOLEM.equals(type)) {
             return 1.4f;
         } else if (EntityTypes.MAGMA_CUBE.equals(type)) {
-            if (packetEntity instanceof PacketEntitySizeable) {
-                float size = ((PacketEntitySizeable) packetEntity).size;
+            if (packetEntity instanceof PacketEntitySizeable sizeable) {
+                float size = sizeable.size;
                 return player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20_5)
                         ? 0.52f * size : player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9)
                         ? 2.04f * (0.255f * size)
@@ -96,8 +96,8 @@ public final class BoundingBoxSize {
         } else if (EntityTypes.SHULKER.equals(type)) {
             return 1f;
         } else if (EntityTypes.SLIME.equals(type)) {
-            if (packetEntity instanceof PacketEntitySizeable) {
-                float size = ((PacketEntitySizeable) packetEntity).size;
+            if (packetEntity instanceof PacketEntitySizeable sizeable) {
+                float size = sizeable.size;
                 return player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20_5)
                         ? 0.52f * size : player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9)
                         ? 2.04f * (0.255f * size) : 0.51000005f * size;
@@ -300,8 +300,8 @@ public final class BoundingBoxSize {
         } else if (EntityTypes.TROPICAL_FISH.equals(type)) {
             return 0.4f;
         } else if (EntityTypes.MAGMA_CUBE.equals(type)) {
-            if (packetEntity instanceof PacketEntitySizeable) {
-                float size = ((PacketEntitySizeable) packetEntity).size;
+            if (packetEntity instanceof PacketEntitySizeable sizeable) {
+                float size = sizeable.size;
                 return player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20_5)
                         ? 0.52f * size : player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9)
                         ? 2.04f * (0.255f * size)
@@ -320,8 +320,8 @@ public final class BoundingBoxSize {
         } else if (EntityTypes.PANDA.equals(type)) {
             return 1.25f;
         } else if (EntityTypes.PHANTOM.equals(type)) {
-            if (packetEntity instanceof PacketEntitySizeable) {
-                return 0.5f + ((PacketEntitySizeable) packetEntity).size * 0.1f;
+            if (packetEntity instanceof PacketEntitySizeable sizeable) {
+                return 0.5f + sizeable.size * 0.1f;
             }
 
             return 1.8f;
@@ -348,8 +348,8 @@ public final class BoundingBoxSize {
         } else if (EntityTypes.SKELETON_HORSE.equals(type)) {
             return 1.6f;
         } else if (EntityTypes.SLIME.equals(type)) {
-            if (packetEntity instanceof PacketEntitySizeable) {
-                float size = ((PacketEntitySizeable) packetEntity).size;
+            if (packetEntity instanceof PacketEntitySizeable sizeable) {
+                float size = sizeable.size;
                 return player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20_5)
                         ? 0.52f * size : player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9)
                         ? 2.04f * (0.255f * size)

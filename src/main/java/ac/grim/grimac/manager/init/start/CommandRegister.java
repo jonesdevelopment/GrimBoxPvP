@@ -26,9 +26,10 @@ public class CommandRegister implements Initable {
         commandManager.registerCommand(new GrimVerbose());
         commandManager.registerCommand(new GrimVersion());
         commandManager.registerCommand(new GrimDump());
+        commandManager.registerCommand(new GrimBrands());
 
         commandManager.getCommandCompletions().registerCompletion("stopspectating", GrimStopSpectating.completionHandler);
-        //
+
         GrimVersion.checkForUpdatesAsync(Bukkit.getConsoleSender());
     }
 }

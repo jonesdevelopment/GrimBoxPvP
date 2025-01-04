@@ -3,6 +3,10 @@ prefix: "&bGrim &8\u00BB"
 
 alerts-enabled: "%prefix% &fUyarılar aktif edildi."
 alerts-disabled: "%prefix% &fUyarılar deaktif edildi."
+verbose-enabled: "%prefix% &fVerbose enabled"
+verbose-disabled: "%prefix% &fVerbose disabled"
+brands-enabled: "%prefix% &fBrands enabled"
+brands-disabled: "%prefix% &fBrands disabled"
 client-brand-format: "%prefix% &f%player% adlı oyuncu %brand% kullanarak giriş yaptı."
 client-brand-format-spoofed: "%prefix% &f%player% tried to spoof their brand to %brand%"
 client-register-bad-channel: "%prefix% &f%player% registered channel %channel%"
@@ -45,6 +49,7 @@ profile:
 help:
   - "&7======================"
   - "/grim alerts &f- &7Uyarıları aktif/deaktif eder"
+  - "/grim brands &f- &7Toggle brands"
   - "/grim profile (oyuncu) &f- &7Oyuncu profilini gösterir"
   - "/grim help &f- &7Bu yardım mesajını gösterir"
   - "/grim debug <player> &f- &7Geliştirici Debug'ını verir"

@@ -241,7 +241,7 @@ public class CompensatedEntities {
             }
         }
 
-        if (entity.isSize()) {
+        if (entity instanceof PacketEntitySizeable sizeable) {
             int id;
             if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThanOrEquals(ServerVersion.V_1_8_8)) {
                 id = 16;
@@ -261,14 +261,14 @@ public class CompensatedEntities {
             if (sizeObject != null) {
                 Object value = sizeObject.getValue();
                 if (value instanceof Integer) {
-                    ((PacketEntitySizeable) entity).size = Math.max((int) value, 1);
+                    sizeable.size = Math.max((int) value, 1);
                 } else if (value instanceof Byte) {
-                    ((PacketEntitySizeable) entity).size = Math.max((byte) value, 1);
+                    sizeable.size = Math.max((byte) value, 1);
                 }
             }
         }
 
-        if (entity instanceof PacketEntityShulker) {
+        if (entity instanceof PacketEntityShulker shulker) {
             int id;
 
             if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThanOrEquals(ServerVersion.V_1_9_4)) {
@@ -287,30 +287,30 @@ public class CompensatedEntities {
 
             if (shulkerAttached != null) {
                 // This NMS -> Bukkit conversion is great and works in all 11 versions.
-                ((PacketEntityShulker) entity).facing = BlockFace.valueOf(shulkerAttached.getValue().toString().toUpperCase());
+                shulker.facing = BlockFace.valueOf(shulkerAttached.getValue().toString().toUpperCase());
             }
 
             EntityData height = WatchableIndexUtil.getIndex(watchableObjects, id + 2);
             if (height != null) {
                 if ((byte) height.getValue() == 0) {
-                    ShulkerData data = new ShulkerData(entity, player.lastTransactionSent.get(), true);
+                    ShulkerData data = new ShulkerData(shulker, player.lastTransactionSent.get(), true);
                     player.compensatedWorld.openShulkerBoxes.remove(data);
                     player.compensatedWorld.openShulkerBoxes.add(data);
                 } else {
-                    ShulkerData data = new ShulkerData(entity, player.lastTransactionSent.get(), false);
+                    ShulkerData data = new ShulkerData(shulker, player.lastTransactionSent.get(), false);
                     player.compensatedWorld.openShulkerBoxes.remove(data);
                     player.compensatedWorld.openShulkerBoxes.add(data);
                 }
             }
         }
 
-        if (entity instanceof PacketEntityRideable) {
+        if (entity instanceof PacketEntityRideable rideable) {
             int offset = 0;
             if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThanOrEquals(ServerVersion.V_1_8_8)) {
                 if (entity.getType() == EntityTypes.PIG) {
                     EntityData pigSaddle = WatchableIndexUtil.getIndex(watchableObjects, 16);
                     if (pigSaddle != null) {
-                        ((PacketEntityRideable) entity).hasSaddle = ((byte) pigSaddle.getValue()) != 0;
+                        rideable.hasSaddle = ((byte) pigSaddle.getValue()) != 0;
                     }
                 }
             } else if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThanOrEquals(ServerVersion.V_1_9_4)) {
@@ -326,29 +326,29 @@ public class CompensatedEntities {
             if (entity.getType() == EntityTypes.PIG) {
                 EntityData pigSaddle = WatchableIndexUtil.getIndex(watchableObjects, 17 - offset);
                 if (pigSaddle != null) {
-                    ((PacketEntityRideable) entity).hasSaddle = (boolean) pigSaddle.getValue();
+                    rideable.hasSaddle = (boolean) pigSaddle.getValue();
                 }
 
                 EntityData pigBoost = WatchableIndexUtil.getIndex(watchableObjects, 18 - offset);
                 if (pigBoost != null) { // What does 1.9-1.10 do here? Is this feature even here?
-                    ((PacketEntityRideable) entity).boostTimeMax = (int) pigBoost.getValue();
-                    ((PacketEntityRideable) entity).currentBoostTime = 0;
+                    rideable.boostTimeMax = (int) pigBoost.getValue();
+                    rideable.currentBoostTime = 0;
                 }
             } else if (entity instanceof PacketEntityStrider) {
                 EntityData striderBoost = WatchableIndexUtil.getIndex(watchableObjects, 17 - offset);
                 if (striderBoost != null) {
-                    ((PacketEntityRideable) entity).boostTimeMax = (int) striderBoost.getValue();
-                    ((PacketEntityRideable) entity).currentBoostTime = 0;
+                    rideable.boostTimeMax = (int) striderBoost.getValue();
+                    rideable.currentBoostTime = 0;
                 }
 
                 EntityData striderSaddle = WatchableIndexUtil.getIndex(watchableObjects, 19 - offset);
                 if (striderSaddle != null) {
-                    ((PacketEntityRideable) entity).hasSaddle = (boolean) striderSaddle.getValue();
+                    rideable.hasSaddle = (boolean) striderSaddle.getValue();
                 }
             }
         }
 
-        if (entity instanceof PacketEntityHorse) {
+        if (entity instanceof PacketEntityHorse horse) {
             if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9_4)) {
                 int offset = 0;
 
@@ -366,9 +366,9 @@ public class CompensatedEntities {
                 if (horseByte != null) {
                     byte info = (byte) horseByte.getValue();
 
-                    ((PacketEntityHorse) entity).isTame = (info & 0x02) != 0;
-                    ((PacketEntityHorse) entity).hasSaddle = (info & 0x04) != 0;
-                    ((PacketEntityHorse) entity).isRearing = (info & 0x20) != 0;
+                    horse.isTame = (info & 0x02) != 0;
+                    horse.hasSaddle = (info & 0x04) != 0;
+                    horse.isRearing = (info & 0x20) != 0;
                 }
 
                 // track camel dashing
@@ -386,10 +386,11 @@ public class CompensatedEntities {
                 if (horseByte != null) {
                     int info = (int) horseByte.getValue();
 
-                    ((PacketEntityHorse) entity).isTame = (info & 0x02) != 0;
-                    ((PacketEntityHorse) entity).hasSaddle = (info & 0x04) != 0;
-                    ((PacketEntityHorse) entity).hasSaddle = (info & 0x08) != 0;
-                    ((PacketEntityHorse) entity).isRearing = (info & 0x40) != 0;
+                    horse.isTame = (info & 0x02) != 0;
+                    // TODO: Check this
+                    horse.hasSaddle = (info & 0x04) != 0;
+                    horse.hasSaddle = (info & 0x08) != 0;
+                    horse.isRearing = (info & 0x40) != 0;
                 }
             }
         }
@@ -433,7 +434,7 @@ public class CompensatedEntities {
             }
         }
 
-        if (entity instanceof PacketEntityHook) {
+        if (entity instanceof PacketEntityHook hook) {
             int index;
             if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThanOrEquals(ServerVersion.V_1_9_4)) {
                 index = 5;
@@ -449,7 +450,7 @@ public class CompensatedEntities {
             if (hookWatchableObject == null) return;
 
             Integer attachedEntityID = (Integer) hookWatchableObject.getValue();
-            ((PacketEntityHook) entity).attached = attachedEntityID - 1; // the server adds 1 to the ID
+            hook.attached = attachedEntityID - 1; // the server adds 1 to the ID
         }
     }
 }

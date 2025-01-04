@@ -403,7 +403,7 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
             safePosition = safePosition.withZ(safePosition.getZ() + lastKnownGoodPosition.pos.getZ());
         }
 
-        data = new TeleportData(safePosition, flags, transaction, teleportId);
+        data = new TeleportData(safePosition, new RelativeFlag(0b11000), transaction, teleportId);
         requiredSetBack = new SetBackData(data, player.xRot, player.yRot, null, false, plugin);
 
         this.lastKnownGoodPosition = new SetbackPosWithVector(safePosition, new Vector());

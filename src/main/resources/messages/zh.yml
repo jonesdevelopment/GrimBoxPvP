@@ -3,6 +3,10 @@ prefix: "&bGrim &8\u00BB"
 
 alerts-enabled: "%prefix% &f警报已开启"
 alerts-disabled: "%prefix% &f警报已禁用"
+verbose-enabled: "%prefix% &fVerbose enabled"
+verbose-disabled: "%prefix% &fVerbose disabled"
+brands-enabled: "%prefix% &fBrands enabled"
+brands-disabled: "%prefix% &fBrands disabled"
 client-brand-format: "%prefix% &f%player% 用 %brand% 加入了游戏"
 client-brand-format-spoofed: "%prefix% &f%player% tried to spoof their brand to %brand%"
 client-register-bad-channel: "%prefix% &f%player% registered channel %channel%"
@@ -45,6 +49,7 @@ profile:
 help:
   - "&7======================"
   - "/grim alerts &f- &7切换警报"
+  - "/grim brands &f- &7Toggle brands"
   - "/grim profile <player> &f- &7查看玩家信息"
   - "/grim help &f- &7查看此帮助消息"
   - "/grim debug <player> &f- &7开发者预测输出"
