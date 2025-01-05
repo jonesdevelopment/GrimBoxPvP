@@ -7,15 +7,19 @@ import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.player.ClientVersion;
+import com.github.retrooper.packetevents.wrapper.configuration.client.WrapperConfigClientPluginMessage;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPluginMessage;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class ClientBrand extends Check implements PacketCheck {
-    String brand = "unresolved";
-    boolean hasBrand = false;
+    @Getter
+    private String brand = "unresolved";
+    private boolean hasBrand = false;
 
     public ClientBrand(GrimPlayer player) {
         super(player);
@@ -25,12 +29,11 @@ public class ClientBrand extends Check implements PacketCheck {
     public void onPacketReceive(final PacketReceiveEvent event) {
         if (event.getPacketType() == PacketType.Play.Client.PLUGIN_MESSAGE) {
             WrapperPlayClientPluginMessage packet = new WrapperPlayClientPluginMessage(event);
-            String channelName = packet.getChannelName();
-            if (channelName.equalsIgnoreCase("minecraft:brand") || channelName.equals("MC|Brand")) {
-                handle(packet.getData());
-            } else if (channelName.equalsIgnoreCase("autototem")) {
+            handle(packet.getChannelName(), packet.getData());
+
+            if (packet.getChannelName().equalsIgnoreCase("autototem")) {
                 String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-register-bad-channel", "%prefix% &f%player% registered channel %channel%")
-                        .replace("%channel%", channelName);
+                        .replace("%channel%", packet.getChannelName());
                 message = MessageUtil.replacePlaceholders(player, message);
                 Component component = MessageUtil.miniMessage(message);
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -38,9 +41,9 @@ public class ClientBrand extends Check implements PacketCheck {
                         MessageUtil.sendMessage(player, component);
                     }
                 }
-                Bukkit.getLogger().warning(player.getName() + " registered channel " + channelName);
+                Bukkit.getLogger().warning(player.getName() + " registered channel " + packet.getChannelName());
                 player.timedOut();
-            } else if ((channelName.equalsIgnoreCase("minecraft:register") || channelName.equalsIgnoreCase("REGISTER")) && brand.equals("vanilla")) {
+            } else if ((packet.getChannelName().equalsIgnoreCase("minecraft:register") || packet.getChannelName().equalsIgnoreCase("REGISTER")) && brand.equals("vanilla")) {
                 final String data = new String(packet.getData());
                 if (data.contains("fabric")) {
                     String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-brand-format-spoofed", "%prefix% &f%player% tried to spoof their brand to %brand%");
@@ -55,38 +58,34 @@ public class ClientBrand extends Check implements PacketCheck {
                     player.timedOut();
                 }
             }
+        } else if (event.getPacketType() == PacketType.Configuration.Client.PLUGIN_MESSAGE) {
+            WrapperConfigClientPluginMessage packet = new WrapperConfigClientPluginMessage(event);
+            handle(packet.getChannelName(), packet.getData());
         }
     }
 
-    public void handle(byte[] data) {
-        if (!hasBrand) {
-            if (data.length > 64 || data.length == 0) {
-                brand = "sent " + data.length + " bytes as brand";
-            } else {
-                byte[] minusLength = new byte[data.length - 1];
-                System.arraycopy(data, 1, minusLength, 0, minusLength.length);
-
-                brand = new String(minusLength).replace(" (Velocity)", ""); //removes velocity's brand suffix
-                brand = ChatColor.stripColor(brand); //strip color codes from client brand
-                if (!GrimAPI.INSTANCE.getConfigManager().isIgnoredClient(brand) && !player.bukkitPlayer.hasPermission("grim.brand.exempt")) {
-                    String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-brand-format", "%prefix% &f%player% joined using %brand%");
-                    message = MessageUtil.replacePlaceholders(player, message);
-
-                    Component component = MessageUtil.miniMessage(message);
-
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (GrimAPI.INSTANCE.getAlertManager().hasBrandsEnabled(player)) {
-                            MessageUtil.sendMessage(player, component);
-                        }
+    private void handle(String channel, byte[] data) {
+        final String expectedChannel = player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13) ? "minecraft:brand" : "MC|Brand";
+        if (!channel.equals(expectedChannel)) return;
+        if (data.length > 64 || data.length == 0) {
+            brand = "sent " + data.length + " bytes as brand";
+        } else if (!hasBrand) {
+            byte[] minusLength = new byte[data.length - 1];
+            System.arraycopy(data, 1, minusLength, 0, minusLength.length);
+            brand = new String(minusLength).replace(" (Velocity)", ""); //removes velocity's brand suffix
+            brand = ChatColor.stripColor(brand); //strip color codes from client brand
+            if (!GrimAPI.INSTANCE.getConfigManager().isIgnoredClient(brand)) {
+                String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-brand-format", "%prefix% &f%player% joined using %brand%");
+                message = MessageUtil.replacePlaceholders(player, message);
+                Component component = MessageUtil.miniMessage(message);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (GrimAPI.INSTANCE.getAlertManager().hasBrandsEnabled(player)) {
+                        MessageUtil.sendMessage(player, component);
                     }
                 }
             }
-
-            hasBrand = true;
         }
-    }
 
-    public String getBrand() {
-        return brand;
+        hasBrand = true;
     }
 }

@@ -138,11 +138,6 @@ bukkit {
             default = Permission.Default.OP
         }
 
-        register("grim.brand.exempt") {
-            description = "Do not show this player's client brand"
-            default = Permission.Default.OP
-        }
-
         register("grim.sendalert") {
             description = "Send cheater alert"
             default = Permission.Default.OP
