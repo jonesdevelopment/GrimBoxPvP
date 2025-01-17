@@ -30,8 +30,8 @@ public class GroundSpoof extends Check implements PostPredictionCheck {
         if (player.packetStateData.lastPacketWasTeleport) return;
 
         if (player.clientClaimsLastOnGround != player.onGround) {
-            if (flagWithSetback()) {
-                alert("claimed " + player.clientClaimsLastOnGround);
+            if (flagAndAlert("claimed " + player.clientClaimsLastOnGround)) {
+                setbackIfAboveSetbackVL();
             }
             player.checkManager.getNoFall().flipPlayerGroundStatus = true;
         }

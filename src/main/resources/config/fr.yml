@@ -136,9 +136,6 @@ TimerVehicle:
   # Cibler un chronomètre de 1,005.
   setbackvl: 10
 
-EntityControl:
-  setbackvl: 25
-
 Reach:
   # De combien devrions-nous agrandir les hitboxes ? Une augmentation de 0,0005 devrait détecter une portée de 3,0005 ou plus.
   # 

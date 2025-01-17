@@ -135,7 +135,7 @@ TimerVehicle:
   # Ziel 1,005 Timer
   setbackvl: 10
 
-EntityControl:
+VehicleC:
   setbackvl: 25
 
 Reach:

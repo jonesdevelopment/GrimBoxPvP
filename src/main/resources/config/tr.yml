@@ -135,9 +135,6 @@ TimerVehicle:
   # Hedef 1.005 timer
   setbackvl: 10
 
-EntityControl:
-  setbackvl: 25
-
 Reach:
   # Hitbox'ları ne kadar genişletmeliyiz? 0.0005, 3.0005+ menzili tespit etmelidir
   #

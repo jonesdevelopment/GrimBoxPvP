@@ -41,7 +41,7 @@ public class AlertManagerImpl implements AlertManager {
     }
 
     public boolean hasBrandsEnabled(Player player) {
-        return enabledVerbose.contains(player) && player.hasPermission("grim.brand");
+        return enabledBrands.contains(player) && player.hasPermission("grim.brand");
     }
 
     @Override

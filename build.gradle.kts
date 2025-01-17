@@ -69,9 +69,10 @@ dependencies {
     implementation("it.unimi.dsi:fastutil:8.5.15")
     implementation("github.scarsz:configuralize:1.4.0")
 
-    //implementation("com.github.grimanticheat:grimapi:1193c4fa41")
-    // Used for local testing: implementation("ac.grim.grimac:GRIMAPI:1.0")
-    implementation("com.github.grimanticheat:grimapi:d7fdef7186")
+
+    // Used for local testing:
+    //implementation("ac.grim.grimac:GrimAPI:1.0")
+    implementation("com.github.grimanticheat:grimapi:ed1ec7b4a1")
 
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")

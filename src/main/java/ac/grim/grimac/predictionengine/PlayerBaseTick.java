@@ -60,7 +60,7 @@ public final class PlayerBaseTick {
             player.trackBaseTickAddition(waterPushVector);
         }
 
-        final boolean wasSlowMovement = player.isSlowMovement;
+        player.lastPose = player.pose;
 
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_13_2)) {
             // 1.13.2 and below logic: If crouching, then slow movement, simple!
@@ -76,7 +76,7 @@ public final class PlayerBaseTick {
 
             // Mojang also accidentally left this in with 1.14-1.14.4
             if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_14) && player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_14_4)) {
-                player.isSlowMovement = player.isSlowMovement || player.isSneaking;
+                player.isSlowMovement |= player.isSneaking;
             }
         }
 

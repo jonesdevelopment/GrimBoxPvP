@@ -4,12 +4,16 @@ import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.api.GrimUser;
 import ac.grim.grimac.api.config.ConfigManager;
+import ac.grim.grimac.api.feature.FeatureManager;
+import ac.grim.grimac.api.handler.ResyncHandler;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
 import ac.grim.grimac.checks.impl.misc.TransactionOrder;
 import ac.grim.grimac.events.packets.CheckManagerListener;
 import ac.grim.grimac.manager.*;
+import ac.grim.grimac.manager.player.features.FeatureManagerImpl;
+import ac.grim.grimac.manager.player.handlers.BukkitResyncHandler;
 import ac.grim.grimac.predictionengine.MovementCheckRunner;
 import ac.grim.grimac.predictionengine.PointThreeEstimator;
 import ac.grim.grimac.predictionengine.UncertaintyHandler;
@@ -33,8 +37,13 @@ import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.netty.channel.ChannelHelper;
 import com.github.retrooper.packetevents.protocol.ConnectionState;
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
+import com.github.retrooper.packetevents.protocol.component.ComponentTypes;
+import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemEquippable;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.item.ItemStack;
+import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
 import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
@@ -51,6 +60,7 @@ import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import io.github.retrooper.packetevents.util.viaversion.ViaVersionUtil;
 import io.netty.channel.Channel;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Bukkit;
@@ -155,6 +165,7 @@ public class GrimPlayer implements GrimUser {
     public double fallDistance;
     public SimpleCollisionBox boundingBox;
     public Pose pose = Pose.STANDING;
+    public Pose lastPose = Pose.STANDING;
     // Determining slow movement has to be done before pose is updated
     public boolean isSlowMovement = false;
     public boolean isInBed = false;
@@ -571,7 +582,7 @@ public class GrimPlayer implements GrimUser {
         FoliaScheduler.getAsyncScheduler().runNow(GrimAPI.INSTANCE.getPlugin(), t -> {
             for (AbstractCheck check : checkManager.allChecks.values()) {
                 if (check instanceof Check) {
-                    ((Check) check).updateExempted();
+                    ((Check) check).updatePermissions();
                 }
             }
         });
@@ -724,6 +735,35 @@ public class GrimPlayer implements GrimUser {
         });
     }
 
+    public boolean canGlide() {
+        if (getClientVersion().isOlderThan(ClientVersion.V_1_21_2)) {
+            final ItemStack chestPlate = getInventory().getChestplate();
+            return chestPlate.getType() == ItemTypes.ELYTRA && chestPlate.getDamageValue() < chestPlate.getMaxDamage();
+        }
+
+        final CompensatedInventory inventory = getInventory();
+        // PacketEvents mappings are wrong
+        return isGlider(inventory.getHelmet(), EquipmentSlot.CHEST_PLATE)
+                || isGlider(inventory.getChestplate(), EquipmentSlot.LEGGINGS)
+                || isGlider(inventory.getLeggings(), EquipmentSlot.BOOTS)
+                || isGlider(inventory.getBoots(), EquipmentSlot.OFF_HAND);
+    }
+
+    private static boolean isGlider(ItemStack stack, EquipmentSlot slot) {
+        if (!stack.hasComponent(ComponentTypes.GLIDER) || stack.getDamageValue() >= stack.getMaxDamage()) {
+            return false;
+        }
+
+        Optional<ItemEquippable> equippable = stack.getComponent(ComponentTypes.EQUIPPABLE);
+        return equippable.isPresent() && equippable.get().getSlot() == slot;
+    }
+
+    public void resyncPose() {
+        if (getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_14) && bukkitPlayer != null) {
+            bukkitPlayer.setSneaking(!bukkitPlayer.isSneaking());
+        }
+    }
+
     public boolean canUseGameMasterBlocks() {
         // This check was added in 1.11
         // 1.11+ players must be in creative and have a permission level at or above 2
@@ -747,6 +787,21 @@ public class GrimPlayer implements GrimUser {
     }
 
     @Override
+    public int getLastTransactionReceived() {
+        return lastTransactionReceived.get();
+    }
+
+    @Override
+    public int getLastTransactionSent() {
+        return lastTransactionSent.get();
+    }
+
+    @Override
+    public void addRealTimeTask(int transaction, Runnable runnable) {
+        latencyUtils.addRealTimeTask(transaction, runnable);
+    }
+
+    @Override
     public String getName() {
         return user.getName();
     }
@@ -759,6 +814,16 @@ public class GrimPlayer implements GrimUser {
     @Override
     public String getBrand() {
         return checkManager.getPacketCheck(ClientBrand.class).getBrand();
+    }
+
+    @Override
+    public @Nullable String getWorldName() {
+        return bukkitPlayer != null ? bukkitPlayer.getWorld().getName() : null;
+    }
+
+    @Override
+    public @Nullable UUID getWorldUID() {
+        return bukkitPlayer != null ? bukkitPlayer.getWorld().getUID() : null;
     }
 
     @Override
@@ -793,18 +858,17 @@ public class GrimPlayer implements GrimUser {
 
     private int maxTransactionTime = 60;
     @Getter private boolean ignoreDuplicatePacketRotation = false;
-    @Getter private boolean experimentalChecks = false;
+    @Getter @Setter private boolean experimentalChecks = false;
     @Getter private boolean cancelDuplicatePacket = true;
-    @Getter private boolean exemptElytra = false;
+    @Getter @Setter private boolean exemptElytra = false;
 
     @Override
     public void reload(ConfigManager config) {
+        featureManager.onReload(config);
         spamThreshold = config.getIntElse("packet-spam-threshold", 100);
         maxTransactionTime = GrimMath.clamp(config.getIntElse("max-transaction-time", 60), 1, 180);
-        experimentalChecks = config.getBooleanElse("experimental-checks", false);
         ignoreDuplicatePacketRotation = config.getBooleanElse("ignore-duplicate-packet-rotation", false);
         cancelDuplicatePacket = config.getBooleanElse("cancel-duplicate-packet", true);
-        exemptElytra = config.getBooleanElse("exempt-elytra", false);
         // reload all checks
         for (AbstractCheck value : checkManager.allChecks.values()) value.reload();
         // reload punishment manager
@@ -922,4 +986,29 @@ public class GrimPlayer implements GrimUser {
             }
         }
     }
+
+    private final FeatureManagerImpl featureManager = new FeatureManagerImpl(this);
+
+    @Override
+    public FeatureManager getFeatureManager() {
+        return featureManager;
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        if (bukkitPlayer != null) bukkitPlayer.sendMessage(message);
+    }
+
+    private ResyncHandler resyncHandler = new BukkitResyncHandler(this);
+
+    @Override
+    public ResyncHandler getResyncHandler() {
+        return resyncHandler;
+    }
+
+    @Override
+    public void setResyncHandler(ResyncHandler resyncHandler) {
+        this.resyncHandler = resyncHandler;
+    }
+
 }

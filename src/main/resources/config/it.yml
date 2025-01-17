@@ -124,10 +124,6 @@ TimerVehicle:
   # Livello di violazione per il timer dei veicoli
   setbackvl: 10
 
-EntityControl:
-  # Livello di violazione per il controllo entità
-  setbackvl: 25
-
 Reach:
   # Limite per rilevare un attacco oltre la distanza massima
   threshold: 0.0005

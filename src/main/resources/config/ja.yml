@@ -140,9 +140,6 @@ TimerVehicle:
   # 目標タイマー値は1.005です
   setbackvl: 10
 
-EntityControl:
-  setbackvl: 25
-
 Reach:
   # ヒットボックスをどれだけ拡大するかを設定します。0.0005に設定することで3.0005以上のリーチを検出できます
   #

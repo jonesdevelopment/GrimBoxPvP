@@ -138,9 +138,6 @@ TimerVehicle:
   # Detecta até 1.005 de timer.
   setbackvl: 10
 
-EntityControl:
-  setbackvl: 25
-
 Reach:
   # Por quanto deve-se expandir as caixas de colisão? 0.0005 deve detectar 3.0005+ de alcance.
   #

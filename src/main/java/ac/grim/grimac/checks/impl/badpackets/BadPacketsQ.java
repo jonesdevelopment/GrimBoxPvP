@@ -21,9 +21,10 @@ public class BadPacketsQ extends Check implements PacketCheck {
         if (event.getPacketType() == Client.ENTITY_ACTION) {
             WrapperPlayClientEntityAction wrapper = new WrapperPlayClientEntityAction(event);
             // Camels are able to send negative jump boost, how and why!?
-            if (wrapper.getJumpBoost() < 0 && player.compensatedEntities.getSelf().getRiding().getType() == EntityTypes.CAMEL) return;
-
-            if (wrapper.getJumpBoost() < 0 || wrapper.getJumpBoost() > 100 || wrapper.getEntityId() != player.entityID || (wrapper.getAction() != Action.START_JUMPING_WITH_HORSE && wrapper.getJumpBoost() != 0)) {
+            if (wrapper.getJumpBoost() < 0 && (!player.inVehicle() || player.compensatedEntities.getSelf().getRiding().getType() != EntityTypes.CAMEL)
+                    || wrapper.getJumpBoost() > 100
+                    || wrapper.getEntityId() != player.entityID
+                    || wrapper.getAction() != Action.START_JUMPING_WITH_HORSE && wrapper.getJumpBoost() != 0) {
                 if (flagAndAlert("boost=" + wrapper.getJumpBoost() + ", action=" + wrapper.getAction() + ", entity=" + wrapper.getEntityId()) && shouldModifyPackets()) {
                     event.setCancelled(true);
                     player.onPacketCancel();
