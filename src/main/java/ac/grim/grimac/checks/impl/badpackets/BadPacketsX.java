@@ -61,6 +61,10 @@ public class BadPacketsX extends Check implements PostPredictionCheck {
                     sneak = true;
                 }
                 case START_SPRINTING, STOP_SPRINTING -> {
+                    if (player.inVehicle()) {
+                        return;
+                    }
+
                     if (sprint) {
                         if (player.canSkipTicks() || flagAndAlert()) {
                             flags++;
