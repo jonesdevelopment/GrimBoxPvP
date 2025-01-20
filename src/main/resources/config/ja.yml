@@ -179,6 +179,8 @@ debug-pipeline-on-join: false
 # 実験的なチェックを有効にします
 experimental-checks: false
 
+mitigate-autoblock: false
+
 # Grimは "Timer" のような違反パケットをキャンセルすることがありますが、1秒間にキャンセルされたパケット数がXを超えた場合、
 # プレイヤーを強制的にキックしますか？これは、いくつかのパケットリミッターがGrimによってキャンセルされたパケットをカウントしないためです。
 packet-spam-threshold: 100
