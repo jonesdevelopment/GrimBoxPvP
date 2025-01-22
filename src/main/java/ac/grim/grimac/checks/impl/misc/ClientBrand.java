@@ -67,17 +67,21 @@ public class ClientBrand extends Check implements PacketCheck {
     private void handle(String channel, byte[] data) {
         final String expectedChannel = player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13) ? "minecraft:brand" : "MC|Brand";
         if (!channel.equals(expectedChannel)) return;
+
         if (data.length > 64 || data.length == 0) {
             brand = "sent " + data.length + " bytes as brand";
         } else if (!hasBrand) {
             byte[] minusLength = new byte[data.length - 1];
             System.arraycopy(data, 1, minusLength, 0, minusLength.length);
+
             brand = new String(minusLength).replace(" (Velocity)", ""); //removes velocity's brand suffix
             brand = ChatColor.stripColor(brand); //strip color codes from client brand
             if (!GrimAPI.INSTANCE.getConfigManager().isIgnoredClient(brand)) {
                 String message = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("client-brand-format", "%prefix% &f%player% joined using %brand%");
                 message = MessageUtil.replacePlaceholders(player, message);
+
                 Component component = MessageUtil.miniMessage(message);
+
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (GrimAPI.INSTANCE.getAlertManager().hasBrandsEnabled(player)) {
                         MessageUtil.sendMessage(player, component);
