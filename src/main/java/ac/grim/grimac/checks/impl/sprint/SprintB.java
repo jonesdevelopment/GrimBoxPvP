@@ -33,7 +33,7 @@ public class SprintB extends Check implements PostPredictionCheck {
             }
 
             if (player.isSprinting && !player.isSwimming && (player.fluidOnEyes != FluidTag.WATER || version.isOlderThan(ClientVersion.V_1_21_4))) {
-                if (flagWithSetback()) alert("");
+                flagAndAlertWithSetback();
             } else reward();
         }
     }

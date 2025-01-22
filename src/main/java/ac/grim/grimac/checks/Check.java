@@ -116,6 +116,18 @@ public class Check extends GrimProcessor implements AbstractCheck {
         return false;
     }
 
+    public final boolean flagAndAlertWithSetback() {
+        return flagAndAlertWithSetback("");
+    }
+
+    public final boolean flagAndAlertWithSetback(String verbose) {
+        if (flagAndAlert(verbose)) {
+            setbackIfAboveSetbackVL();
+            return true;
+        }
+        return false;
+    }
+
     public final void reward() {
         violations = Math.max(0, violations - decay);
     }

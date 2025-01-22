@@ -33,9 +33,7 @@ public class BadPacketsX extends Check implements PostPredictionCheck {
 
         if (player.isTickingReliablyFor(3)) {
             for (; flags > 0; flags--) {
-                if (flagAndAlert()) {
-                    setbackIfAboveSetbackVL();
-                }
+                flagAndAlertWithSetback();
             }
         }
 

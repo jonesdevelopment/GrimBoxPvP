@@ -209,9 +209,7 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
                 } else if (flagAndAlert(player.likelyKB.offset == Integer.MAX_VALUE ? "ignored knockback"
                         : "o: " + formatOffset(player.likelyKB.offset))) { // This velocity was sent by the server.
                     if (player.likelyKB.offset >= immediate || threshold >= maxAdv) {
-                        if (!isNoSetbackPermission()) {
-                            player.getSetbackTeleportUtil().executeViolationSetback();
-                        }
+                        setbackIfAboveSetbackVL();
                     }
                 } else {
                     reward();
