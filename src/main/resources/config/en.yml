@@ -168,7 +168,7 @@ exploit:
 debug-pipeline-on-join: false
 
 # Enables experimental checks
-experimental-checks: true
+experimental-checks: false
 
 mitigate-autoblock: false
 
