@@ -41,14 +41,12 @@ public class BaseConfigManager {
 
         printAlertsToConsole = config.getBooleanElse("alerts.print-to-console", true);
         prefix = config.getStringElse("prefix", "&bGrim &8»");
-
-        disconnectTimeout = MessageUtil.miniMessage(config.getStringElse("disconnect.timeout", "<lang:disconnect.timeout>"));
-        disconnectClosed = MessageUtil.miniMessage(config.getStringElse("disconnect.closed", "<lang:disconnect.timeout>"));
     }
 
     // ran on start, can be used to handle things that can't be done while loading
     public void start() {
-
+        disconnectTimeout = MessageUtil.miniMessage(config.getStringElse("disconnect.timeout", "<lang:disconnect.timeout>"));
+        disconnectClosed = MessageUtil.miniMessage(config.getStringElse("disconnect.closed", "<lang:disconnect.timeout>"));
     }
 
     @Getter private boolean printAlertsToConsole = false;
