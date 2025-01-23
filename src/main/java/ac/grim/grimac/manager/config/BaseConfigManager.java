@@ -2,7 +2,9 @@ package ac.grim.grimac.manager.config;
 
 import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.utils.anticheat.LogUtil;
+import ac.grim.grimac.utils.anticheat.MessageUtil;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ public class BaseConfigManager {
     // initialize the config
     public void load(ConfigManager config) {
         this.config = config;
-        //
+
         int configuredMaxTransactionTime = config.getIntElse("max-transaction-time", 60);
         if (configuredMaxTransactionTime > 180 || configuredMaxTransactionTime < 1) {
             LogUtil.warn("Detected invalid max-transaction-time! This setting is clamped between 1 and 180 to prevent issues. Attempting to disable or set this too high can result in memory usage issues.");
@@ -39,6 +41,9 @@ public class BaseConfigManager {
 
         printAlertsToConsole = config.getBooleanElse("alerts.print-to-console", true);
         prefix = config.getStringElse("prefix", "&bGrim &8»");
+
+        disconnectTimeout = MessageUtil.miniMessage(config.getStringElse("disconnect.timeout", "<lang:disconnect.timeout>"));
+        disconnectClosed = MessageUtil.miniMessage(config.getStringElse("disconnect.closed", "<lang:disconnect.timeout>"));
     }
 
     // ran on start, can be used to handle things that can't be done while loading
@@ -49,6 +54,9 @@ public class BaseConfigManager {
     @Getter private boolean printAlertsToConsole = false;
 
     @Getter private String prefix = "&bGrim &8»";
+
+    @Getter private Component disconnectTimeout;
+    @Getter private Component disconnectClosed;
 
     private final List<Pattern> ignoredClientPatterns = new ArrayList<>();
 
