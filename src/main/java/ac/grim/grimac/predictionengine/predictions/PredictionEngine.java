@@ -364,7 +364,17 @@ public class PredictionEngine {
     private void addAttackSlowToPossibilities(GrimPlayer player, Set<VectorData> velocities) {
         for (int x = 1; x <= Math.min(player.maxPlayerAttackSlow, 5); x++) {
             for (VectorData data : new HashSet<>(velocities)) {
-                velocities.add(data.returnNewModified(data.vector.clone().multiply(new Vector(0.6, 1, 0.6)), VectorData.VectorType.AttackSlow));
+                if (player.minPlayerAttackSlow > 0) {
+                    data.vector.setX(data.vector.getX() * 0.6);
+                    data.vector.setZ(data.vector.getZ() * 0.6);
+                    data.addVectorType(VectorData.VectorType.AttackSlow);
+                } else {
+                    velocities.add(data.returnNewModified(data.vector.clone().multiply(new Vector(0.6, 1, 0.6)), VectorData.VectorType.AttackSlow));
+                }
+            }
+
+            if (player.minPlayerAttackSlow > 0) {
+                player.minPlayerAttackSlow--;
             }
         }
     }

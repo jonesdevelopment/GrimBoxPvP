@@ -16,7 +16,6 @@ import com.github.retrooper.packetevents.protocol.item.enchantment.type.Enchantm
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 
 public class PacketPlayerAttack extends PacketListenerAbstract {
 
@@ -58,14 +57,13 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                     // 1.8 players who are packet sprinting WILL get slowed
                     // 1.9+ players who are packet sprinting might not, based on attack cooldown
                     // Players with knockback enchantments always get slowed
-                    if ((player.isSprinting && !hasNegativeKB && isLegacyPlayer) || hasKnockbackSword) {
-                        player.minPlayerAttackSlow += 1;
-                        player.maxPlayerAttackSlow += 1;
+                    if ((player.lastSprinting && !hasNegativeKB && isLegacyPlayer) || hasKnockbackSword) {
+                        player.minPlayerAttackSlow++;
+                        player.maxPlayerAttackSlow++;
 
                         // Players cannot slow themselves twice in one tick without a knockback sword
                         if (!hasKnockbackSword) {
-                            player.minPlayerAttackSlow = 0;
-                            player.maxPlayerAttackSlow = 1;
+                            player.maxPlayerAttackSlow = player.minPlayerAttackSlow = 1;
                         }
                     } else if (!isLegacyPlayer && player.isSprinting) {
                         // 1.9+ players who have attack speed cannot slow themselves twice in one tick because their attack cooldown gets reset on swing.
@@ -76,17 +74,10 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                         }
 
                         // 1.9+ player who might have been slowed, but we can't be sure
-                        player.maxPlayerAttackSlow += 1;
+                        player.maxPlayerAttackSlow++;
                     }
                 }
             }
-        }
-
-        if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType())) {
-            GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
-            if (player == null) return;
-
-            player.minPlayerAttackSlow = 0;
         }
     }
 }
