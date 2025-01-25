@@ -257,12 +257,18 @@ public class PacketEntityReplication extends Check implements PacketCheck {
                 player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> {
                     if (slot.getSlot() - 36 == player.packetStateData.lastSlotSelected) {
                         player.packetStateData.setSlowedByUsingItem(false);
+                        if (player.isMitigateDesyncNoSlow()) {
+                            player.resetBukkitItemUsage();
+                        }
                     }
                 });
 
                 player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get() + 1, () -> {
                     if (slot.getSlot() - 36 == player.packetStateData.lastSlotSelected) {
                         player.packetStateData.setSlowedByUsingItem(false);
+                        if (player.isMitigateDesyncNoSlow()) {
+                            player.resetBukkitItemUsage();
+                        }
                     }
                 });
             }

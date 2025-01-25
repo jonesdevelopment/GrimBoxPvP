@@ -181,7 +181,9 @@ public class MovementTicker {
         collide = PredictionEngine.clampMovementToHardBorder(player, collide);
 
         // The game disregards movements smaller than 1e-7 (such as in boats)
-        if (collide.lengthSquared() < 1e-7) {
+        if (collide.lengthSquared() < 1e-7
+                // New condition added in 1.21.2
+                && (player.getClientVersion().isOlderThan(ClientVersion.V_1_21_2) || inputVel.lengthSquared() - collide.lengthSquared() >= 1e-7)) {
             collide = new Vector();
         }
 
