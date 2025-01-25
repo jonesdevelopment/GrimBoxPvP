@@ -78,10 +78,10 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
             for (Vector3i record : explosion.getRecords()) {
                 // Null OR not flip redstone blocks, then set to air
                 if (blockInteraction != WrapperPlayServerExplosion.BlockInteraction.TRIGGER_BLOCKS) {
-                    player.compensatedWorld.updateBlock(record.x, record.y, record.z, 0);
+                    player.world.updateBlock(record.x, record.y, record.z, 0);
                 } else {
                     // We need to flip redstone blocks, or do special things with other blocks
-                    final WrappedBlockState state = player.compensatedWorld.getWrappedBlockStateAt(record);
+                    final WrappedBlockState state = player.world.getBlock(record);
                     final StateType type = state.getType();
                     if (BlockTags.CANDLES.contains(type) || BlockTags.CANDLE_CAKES.contains(type)) {
                         state.setLit(false);
@@ -95,7 +95,7 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
                     final Object poweredValue = state.getInternalData().get(StateValue.POWERED);
                     final boolean canFlip = (poweredValue != null && !(Boolean) poweredValue) || type == StateTypes.LEVER;
                     if (canFlip) {
-                        player.compensatedWorld.tickOpenable(record.x, record.y, record.z);
+                        player.world.tickOpenable(record.x, record.y, record.z);
                     }
                 }
             }
@@ -204,7 +204,7 @@ public class ExplosionHandler extends Check implements PostPredictionCheck {
         }
 
         // 100% known kb was taken
-        if (player.likelyExplosions != null && !player.compensatedEntities.getSelf().isDead) {
+        if (player.likelyExplosions != null && !player.entities.self.isDead) {
             if (player.likelyExplosions.offset > offsetToFlag) {
                 flagAndAlertWithSetback(player.likelyExplosions.offset == Integer.MAX_VALUE ? "ignored explosion" : "o: " + formatOffset(offset));
             } else {

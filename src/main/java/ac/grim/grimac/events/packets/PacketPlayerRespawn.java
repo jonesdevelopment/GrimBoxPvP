@@ -90,9 +90,9 @@ public class PacketPlayerRespawn extends PacketListenerAbstract {
             }
 
             if (health.getHealth() <= 0) {
-                player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> player.compensatedEntities.getSelf().isDead = true);
+                player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> player.entities.self.isDead = true);
             } else {
-                player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get() + 1, () -> player.compensatedEntities.getSelf().isDead = false);
+                player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get() + 1, () -> player.entities.self.isDead = false);
             }
 
             event.getTasksAfterSend().add(player::sendTransaction);
@@ -108,7 +108,7 @@ public class PacketPlayerRespawn extends PacketListenerAbstract {
             player.dimensionType = joinGame.getDimensionType();
 
             if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_17)) return;
-            player.compensatedWorld.setDimension(joinGame.getDimensionType(), event.getUser());
+            player.world.setDimension(joinGame.getDimensionType(), event.getUser());
         }
 
         if (event.getPacketType() == PacketType.Play.Server.RESPAWN) {
@@ -128,7 +128,7 @@ public class PacketPlayerRespawn extends PacketListenerAbstract {
 
             // clear server entity positions when the world changes
             if (isWorldChange(player, respawn)) {
-                player.compensatedEntities.serverPositionsMap.clear();
+                player.entities.serverPositionsMap.clear();
             }
 
             player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get() + 1, () -> {
@@ -149,7 +149,7 @@ public class PacketPlayerRespawn extends PacketListenerAbstract {
 
                 if (!keepTrackedData) {
                     player.powderSnowFrozenTicks = 0;
-                    player.compensatedEntities.getSelf().hasGravity = true;
+                    player.entities.self.hasGravity = true;
                     player.playerEntityHasGravity = true;
                 }
 
@@ -171,36 +171,36 @@ public class PacketPlayerRespawn extends PacketListenerAbstract {
 
                 // EVERYTHING gets reset on a cross dimensional teleport, clear chunks and entities!
                 if (isWorldChange(player, respawn)) {
-                    player.compensatedEntities.entityMap.clear();
-                    player.compensatedWorld.activePistons.clear();
-                    player.compensatedWorld.openShulkerBoxes.clear();
-                    player.compensatedWorld.chunks.clear();
-                    player.compensatedWorld.isRaining = false;
+                    player.entities.entityMap.clear();
+                    player.world.activePistons.clear();
+                    player.world.openShulkerBoxes.clear();
+                    player.world.chunks.clear();
+                    player.world.isRaining = false;
                 }
                 player.dimensionType = respawn.getDimensionType();
 
-                player.compensatedEntities.serverPlayerVehicle = null; // All entities get removed on respawn
-                player.compensatedEntities.playerEntity = new PacketEntitySelf(player, player.compensatedEntities.playerEntity);
-                player.compensatedEntities.selfTrackedEntity = new TrackerData(0, 0, 0, 0, 0, EntityTypes.PLAYER, player.lastTransactionSent.get());
+                player.entities.serverPlayerVehicle = null; // All entities get removed on respawn
+                player.entities.self = new PacketEntitySelf(player, player.entities.self);
+                player.entities.selfTrackedEntity = new TrackerData(0, 0, 0, 0, 0, EntityTypes.PLAYER, player.lastTransactionSent.get());
 
                 if (player.getClientVersion().isOlderThan(ClientVersion.V_1_14)) { // 1.14+ players send a packet for this, listen for it instead
                     player.isSprinting = false;
                     player.checkManager.getPacketCheck(BadPacketsF.class).lastSprinting = false; // Pre 1.14 clients set this to false when creating new entity
                     // TODO: What the fuck viaversion, why do you throw out keep all metadata?
                     // The server doesn't even use it... what do we do?
-                    player.compensatedEntities.hasSprintingAttributeEnabled = false;
+                    player.entities.hasSprintingAttributeEnabled = false;
                 }
                 player.pose = Pose.STANDING;
                 player.clientVelocity = new Vector();
                 player.gamemode = respawn.getGameMode();
                 if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_17)) {
-                    player.compensatedWorld.setDimension(respawn.getDimensionType(), event.getUser());
+                    player.world.setDimension(respawn.getDimensionType(), event.getUser());
                 }
 
                 if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_16) && !this.hasFlag(respawn, KEEP_ATTRIBUTES)) {
                     // Reset attributes if not kept
-                    player.compensatedEntities.getSelf().resetAttributes();
-                    player.compensatedEntities.hasSprintingAttributeEnabled = false;
+                    player.entities.self.resetAttributes();
+                    player.entities.hasSprintingAttributeEnabled = false;
                 }
             });
         }

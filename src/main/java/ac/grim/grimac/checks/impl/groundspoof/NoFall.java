@@ -96,6 +96,6 @@ public class NoFall extends Check implements PacketCheck {
             }
         }
 
-        return player.compensatedWorld.isNearHardEntity(playerBB.copy().expand(4));
+        return player.world.isNearHardEntity(playerBB.copy().expand(4));
     }
 }

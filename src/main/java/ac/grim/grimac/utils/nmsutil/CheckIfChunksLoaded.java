@@ -4,7 +4,7 @@ import ac.grim.grimac.player.GrimPlayer;
 
 public class CheckIfChunksLoaded {
     public static boolean isChunksUnloadedAt(GrimPlayer player, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
-        if (maxY < player.compensatedWorld.getMinHeight() || minY >= player.compensatedWorld.getMaxHeight()) {
+        if (maxY < player.world.getMinHeight() || minY >= player.world.getMaxHeight()) {
             return true;
         }
 
@@ -15,7 +15,7 @@ public class CheckIfChunksLoaded {
 
         for (int i = minX; i <= maxX; ++i) {
             for (int j = minZ; j <= maxZ; ++j) {
-                if (player.compensatedWorld.getChunk(i, j) == null) {
+                if (player.world.getChunk(i, j) == null) {
                     return true;
                 }
             }

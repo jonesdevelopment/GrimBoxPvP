@@ -267,9 +267,9 @@ public class Collisions {
         int minBlockZ = (int) Math.floor(expandedBB.minZ - COLLISION_EPSILON) - 1;
         int maxBlockZ = (int) Math.floor(expandedBB.maxZ + COLLISION_EPSILON) + 1;
 
-        final int minSection = player.compensatedWorld.getMinHeight() >> 4;
+        final int minSection = player.world.getMinHeight() >> 4;
         final int minBlock = minSection << 4;
-        final int maxBlock = player.compensatedWorld.getMaxHeight() - 1;
+        final int maxBlock = player.world.getMaxHeight() - 1;
 
         int minChunkX = minBlockX >> 4;
         int maxChunkX = maxBlockX >> 4;
@@ -291,7 +291,7 @@ public class Collisions {
                 int chunkXGlobalPos = currChunkX << 4;
                 int chunkZGlobalPos = currChunkZ << 4;
 
-                Column chunk = player.compensatedWorld.getChunk(currChunkX, currChunkZ);
+                Column chunk = player.world.getChunk(currChunkX, currChunkZ);
                 if (chunk == null) continue;
 
                 BaseChunk[] sections = chunk.chunks();
@@ -441,7 +441,7 @@ public class Collisions {
 
         // Use the bounding box for after the player's movement is applied
         double expandAmount = player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_19_4) ? 1e-5 : 0.001;
-        SimpleCollisionBox aABB = player.compensatedEntities.getSelf().inVehicle()
+        SimpleCollisionBox aABB = player.inVehicle()
                 ? GetBoundingBox.getCollisionBoxForPlayer(player, player.x, player.y, player.z).expand(-expandAmount)
                 : player.boundingBox.copy().expand(-expandAmount);
 
@@ -454,11 +454,11 @@ public class Collisions {
         for (int blockX = blockPos.getBlockX(); blockX <= blockPos2.getBlockX(); ++blockX) {
             for (int blockY = blockPos.getBlockY(); blockY <= blockPos2.getBlockY(); ++blockY) {
                 for (int blockZ = blockPos.getBlockZ(); blockZ <= blockPos2.getBlockZ(); ++blockZ) {
-                    WrappedBlockState block = player.compensatedWorld.getWrappedBlockStateAt(blockX, blockY, blockZ);
+                    WrappedBlockState block = player.world.getBlock(blockX, blockY, blockZ);
                     StateType blockType = block.getType();
 
                     if (blockType == StateTypes.COBWEB) {
-                        if (player.compensatedEntities.hasPotionEffect(PotionTypes.WEAVING)) {
+                        if (player.entities.hasPotionEffect(PotionTypes.WEAVING)) {
                             player.stuckSpeedMultiplier = new Vector(0.5, 0.25, 0.5);
                         } else {
                             player.stuckSpeedMultiplier = new Vector(0.25, 0.05000000074505806, 0.25);
@@ -485,9 +485,9 @@ public class Collisions {
                     }
 
                     if (blockType == StateTypes.BUBBLE_COLUMN && player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13)) {
-                        WrappedBlockState blockAbove = player.compensatedWorld.getWrappedBlockStateAt(blockX, blockY + 1, blockZ);
+                        WrappedBlockState blockAbove = player.world.getBlock(blockX, blockY + 1, blockZ);
 
-                        if (player.compensatedEntities.getSelf().getRiding() != null && player.compensatedEntities.getSelf().getRiding().isBoat()) {
+                        if (player.inVehicle() && player.entities.self.getRiding().isBoat()) {
                             if (!blockAbove.getType().isAir()) {
                                 if (block.isDrag()) {
                                     player.clientVelocity.setY(Math.max(-0.3D, player.clientVelocity.getY() - 0.03D));
@@ -570,7 +570,7 @@ public class Collisions {
         for (int i = blockPos.getBlockX(); i <= blockPos2.getBlockX(); ++i) {
             for (int j = blockPos.getBlockY(); j <= blockPos2.getBlockY(); ++j) {
                 for (int k = blockPos.getBlockZ(); k <= blockPos2.getBlockZ(); ++k) {
-                    WrappedBlockState block = player.compensatedWorld.getWrappedBlockStateAt(i, j, k);
+                    WrappedBlockState block = player.world.getBlock(i, j, k);
                     StateType blockType = block.getType();
 
                     if (blockType == StateTypes.COBWEB) {
@@ -600,7 +600,7 @@ public class Collisions {
                         // Mojang re-added soul sand pushing by checking if the player is actually in the block
                         // (This is why from 1.14-1.15 soul sand didn't push)
                         if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_16)) {
-                            WrappedBlockState data = player.compensatedWorld.getWrappedBlockStateAt(x, y, z);
+                            WrappedBlockState data = player.world.getBlock(x, y, z);
                             CollisionBox box = CollisionData.getData(data.getType()).getMovementCollisionBox(player, player.getClientVersion(), data, x, y, z);
 
                             if (!box.isIntersected(playerBB)) continue;
@@ -616,7 +616,7 @@ public class Collisions {
     }
 
     public static boolean doesBlockSuffocate(GrimPlayer player, int x, int y, int z) {
-        WrappedBlockState data = player.compensatedWorld.getWrappedBlockStateAt(x, y, z);
+        WrappedBlockState data = player.world.getBlock(x, y, z);
         StateType mat = data.getType();
 
         // Optimization - all blocks that can suffocate must have a hitbox
@@ -662,9 +662,9 @@ public class Collisions {
         int minBlockZ = (int) Math.floor(checkBox.minZ);
         int maxBlockZ = (int) Math.floor(checkBox.maxZ);
 
-        final int minSection = player.compensatedWorld.getMinHeight() >> 4;
+        final int minSection = player.world.getMinHeight() >> 4;
         final int minBlock = minSection << 4;
-        final int maxBlock = player.compensatedWorld.getMaxHeight() - 1;
+        final int maxBlock = player.world.getMaxHeight() - 1;
 
         int minChunkX = minBlockX >> 4;
         int maxChunkX = maxBlockX >> 4;
@@ -686,7 +686,7 @@ public class Collisions {
                 int chunkXGlobalPos = currChunkX << 4;
                 int chunkZGlobalPos = currChunkZ << 4;
 
-                Column chunk = player.compensatedWorld.getChunk(currChunkX, currChunkZ);
+                Column chunk = player.world.getChunk(currChunkX, currChunkZ);
 
                 if (chunk == null) continue;
                 BaseChunk[] sections = chunk.chunks();
@@ -726,9 +726,9 @@ public class Collisions {
         int minBlockZ = (int) Math.floor(checkBox.minZ - COLLISION_EPSILON) - 1;
         int maxBlockZ = (int) Math.floor(checkBox.maxZ + COLLISION_EPSILON) + 1;
 
-        final int minSection = player.compensatedWorld.getMinHeight() >> 4;
+        final int minSection = player.world.getMinHeight() >> 4;
         final int minBlock = minSection << 4;
-        final int maxBlock = player.compensatedWorld.getMaxHeight() - 1;
+        final int maxBlock = player.world.getMaxHeight() - 1;
 
         int minChunkX = minBlockX >> 4;
         int maxChunkX = maxBlockX >> 4;
@@ -750,7 +750,7 @@ public class Collisions {
                 int chunkXGlobalPos = currChunkX << 4;
                 int chunkZGlobalPos = currChunkZ << 4;
 
-                Column chunk = player.compensatedWorld.getChunk(currChunkX, currChunkZ);
+                Column chunk = player.world.getChunk(currChunkX, currChunkZ);
 
                 if (chunk == null) continue;
                 BaseChunk[] sections = chunk.chunks();
@@ -797,7 +797,7 @@ public class Collisions {
     }
 
     public static boolean onClimbable(GrimPlayer player, double x, double y, double z) {
-        WrappedBlockState blockState = player.compensatedWorld.getWrappedBlockStateAt(x, y, z);
+        WrappedBlockState blockState = player.world.getBlock(x, y, z);
         StateType blockMaterial = blockState.getType();
 
         // ViaVersion replacement block -> glow berry vines (cave vines) -> fern
@@ -823,7 +823,7 @@ public class Collisions {
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8)) return false;
 
         if (blockData.isOpen()) {
-            WrappedBlockState blockBelow = player.compensatedWorld.getWrappedBlockStateAt(x, y - 1, z);
+            WrappedBlockState blockBelow = player.world.getBlock(x, y - 1, z);
 
             if (blockBelow.getType() == StateTypes.LADDER) {
                 return blockData.getFacing() == blockBelow.getFacing();

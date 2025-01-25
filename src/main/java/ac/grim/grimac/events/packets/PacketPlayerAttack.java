@@ -4,7 +4,6 @@ import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.checks.impl.badpackets.BadPacketsW;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.data.packetentity.PacketEntity;
-import ac.grim.grimac.utils.math.GrimMath;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerAbstract;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
@@ -33,7 +32,7 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
             if (player == null) return;
 
             // The entity does not exist
-            if (!player.compensatedEntities.entityMap.containsKey(interact.getEntityId()) && !player.compensatedEntities.serverPositionsMap.containsKey(interact.getEntityId())) {
+            if (!player.entities.entityMap.containsKey(interact.getEntityId()) && !player.entities.serverPositionsMap.containsKey(interact.getEntityId())) {
                 final BadPacketsW badPacketsW = player.checkManager.getPacketCheck(BadPacketsW.class);
                 if (badPacketsW.flagAndAlert("entityId=" + interact.getEntityId()) && badPacketsW.shouldModifyPackets()) {
                     event.setCancelled(true);
@@ -48,7 +47,7 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                 }
 
                 ItemStack heldItem = player.getInventory().getHeldItem();
-                PacketEntity entity = player.compensatedEntities.getEntity(interact.getEntityId());
+                PacketEntity entity = player.entities.getEntity(interact.getEntityId());
 
                 if (entity != null && (!entity.isLivingEntity() || entity.getType() == EntityTypes.PLAYER)) {
                     int knockbackLevel = player.getClientVersion().isOlderThan(ClientVersion.V_1_21) && heldItem != null
@@ -65,23 +64,23 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                     // 1.9+ players who are packet sprinting might not, based on attack cooldown
                     // Players with knockback enchantments always get slowed
                     if (player.lastSprinting && knockbackLevel >= 0 && isLegacyPlayer || knockbackLevel > 0) {
-                        player.minPlayerAttackSlow++;
-                        player.maxPlayerAttackSlow++;
+                        player.minAttackSlow++;
+                        player.maxAttackSlow++;
 
                         // Players cannot slow themselves twice in one tick without a knockback sword
                         if (knockbackLevel == 0) {
-                            player.maxPlayerAttackSlow = player.minPlayerAttackSlow = 1;
+                            player.maxAttackSlow = player.minAttackSlow = 1;
                         }
                     } else if (!isLegacyPlayer && player.lastSprinting) {
                         // 1.9+ players who have attack speed cannot slow themselves twice in one tick because their attack cooldown gets reset on swing.
-                        if (player.maxPlayerAttackSlow > 0
+                        if (player.maxAttackSlow > 0
                                 && PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9)
-                                && player.compensatedEntities.getSelf().getAttributeValue(Attributes.ATTACK_SPEED) < 16) { // 16 is a reasonable limit
+                                && player.entities.self.getAttributeValue(Attributes.ATTACK_SPEED) < 16) { // 16 is a reasonable limit
                             return;
                         }
 
                         // 1.9+ player who might have been slowed, but we can't be sure
-                        player.maxPlayerAttackSlow++;
+                        player.maxAttackSlow++;
                     }
                 }
             }

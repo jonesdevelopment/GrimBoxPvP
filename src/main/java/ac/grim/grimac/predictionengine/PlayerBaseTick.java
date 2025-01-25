@@ -26,7 +26,7 @@ public final class PlayerBaseTick {
     }
 
     private static SimpleCollisionBox getBoundingBoxForPose(GrimPlayer player, Pose pose, double x, double y, double z) {
-        final float scale = (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.SCALE);
+        final float scale = (float) player.entities.self.getAttributeValue(Attributes.SCALE);
         final float width = pose.width * scale;
         final float height = pose.height * scale;
         float radius = width / 2.0F;
@@ -38,7 +38,7 @@ public final class PlayerBaseTick {
         player.baseTickAddition = new Vector();
         player.baseTickWaterPushing = new Vector();
 
-        if (player.isFlying && player.isSneaking && !player.compensatedEntities.getSelf().inVehicle()) {
+        if (player.isFlying && player.isSneaking && !player.inVehicle()) {
             Vector flyingShift = new Vector(0, player.flySpeed * -3, 0);
             player.baseTickAddVector(flyingShift);
             player.trackBaseTickAddition(flyingShift);
@@ -54,7 +54,7 @@ public final class PlayerBaseTick {
 
         // You cannot crouch while flying, only shift - could be specific to 1.14?
         // pre-1.13 clients don't have this code
-        if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13) && player.wasTouchingWater && player.isSneaking && !player.isFlying && !player.compensatedEntities.getSelf().inVehicle()) {
+        if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13) && player.wasTouchingWater && player.isSneaking && !player.isFlying && !player.inVehicle()) {
             Vector waterPushVector = new Vector(0, -0.04f, 0);
             player.baseTickAddVector(waterPushVector);
             player.trackBaseTickAddition(waterPushVector);
@@ -80,10 +80,10 @@ public final class PlayerBaseTick {
             }
         }
 
-        if (player.compensatedEntities.getSelf().inVehicle()) player.isSlowMovement = false;
+        if (player.inVehicle()) player.isSlowMovement = false;
 
         // Players in boats don't care about being in blocks
-        if (!player.compensatedEntities.getSelf().inVehicle()) {
+        if (!player.inVehicle()) {
             moveTowardsClosestSpace(player, player.lastX - (player.boundingBox.maxX - player.boundingBox.minX) * 0.35, player.lastZ + (player.boundingBox.maxZ - player.boundingBox.minZ) * 0.35);
             moveTowardsClosestSpace(player, player.lastX - (player.boundingBox.maxX - player.boundingBox.minX) * 0.35, player.lastZ - (player.boundingBox.maxZ - player.boundingBox.minZ) * 0.35);
             moveTowardsClosestSpace(player, player.lastX + (player.boundingBox.maxX - player.boundingBox.minX) * 0.35, player.lastZ - (player.boundingBox.maxZ - player.boundingBox.minZ) * 0.35);
@@ -103,12 +103,12 @@ public final class PlayerBaseTick {
 
         double d0 = player.lastY + player.getEyeHeight() - 0.1111111119389534D;
 
-        final PacketEntity riding = player.compensatedEntities.getSelf().getRiding();
+        final PacketEntity riding = player.entities.self.getRiding();
         if (riding != null && riding.isBoat() && !player.vehicleData.boatUnderwater && player.boundingBox.maxY >= d0 && player.boundingBox.minY <= d0) {
             return;
         }
 
-        double d1 = (float) Math.floor(d0) + player.compensatedWorld.getWaterFluidLevelAt(player.lastX, d0, player.lastZ);
+        double d1 = (float) Math.floor(d0) + player.world.getWaterFluidLevelAt(player.lastX, d0, player.lastZ);
         if (d1 > d0) {
             player.fluidOnEyes = FluidTag.WATER;
             if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_15_2))
@@ -119,7 +119,7 @@ public final class PlayerBaseTick {
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_15_2))
             player.wasEyeInWater = false;
 
-        d1 = (float) Math.floor(d0) + player.compensatedWorld.getWaterFluidLevelAt(player.lastX, d0, player.lastZ);
+        d1 = (float) Math.floor(d0) + player.world.getWaterFluidLevelAt(player.lastX, d0, player.lastZ);
         if (d1 > d0) {
             player.fluidOnEyes = FluidTag.LAVA;
         }
@@ -134,7 +134,7 @@ public final class PlayerBaseTick {
             // 1.13 and below clients use this stupid method to check if in lava
         else if (player.getClientVersion().isOlderThan(ClientVersion.V_1_14)) {
             SimpleCollisionBox playerBox = player.boundingBox.copy().expand(-0.1F, -0.4F, -0.1F);
-            player.wasTouchingLava = player.compensatedWorld.containsLava(playerBox);
+            player.wasTouchingLava = player.world.containsLava(playerBox);
         }
     }
 
@@ -142,7 +142,7 @@ public final class PlayerBaseTick {
         // Pre-1.17 clients don't have powder snow and therefore don't desync
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_16_4)) return;
 
-        final ValuedAttribute playerSpeed = player.compensatedEntities.getSelf().getAttribute(Attributes.MOVEMENT_SPEED).orElseThrow();
+        final ValuedAttribute playerSpeed = player.entities.self.getAttribute(Attributes.MOVEMENT_SPEED).orElseThrow();
 
         // Might be null after respawn?
         final Optional<WrapperPlayServerUpdateAttributes.Property> property = playerSpeed.property();
@@ -192,7 +192,7 @@ public final class PlayerBaseTick {
             // I'm not too sure about this code, but it appears like this is only a 1.14+ feature
             // In my testing this seems good but still don't have full confidence for versions like 1.13
             if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_14) &&
-                    !player.compensatedEntities.getSelf().inVehicle() && !canEnterPose(player, pose, player.x, player.y, player.z)) {
+                    !player.inVehicle() && !canEnterPose(player, pose, player.x, player.y, player.z)) {
                 if (canEnterPose(player, Pose.CROUCHING, player.x, player.y, player.z)) {
                     pose = Pose.CROUCHING;
                 } else {
@@ -247,7 +247,7 @@ public final class PlayerBaseTick {
         } else if (player.isFlying) {
             player.isSwimming = false;
         } else {
-            if (player.compensatedEntities.getSelf().inVehicle()) {
+            if (player.inVehicle()) {
                 player.isSwimming = false;
             } else if (player.isSwimming) {
                 player.isSwimming = player.lastSprinting && player.wasTouchingWater;
@@ -255,7 +255,7 @@ public final class PlayerBaseTick {
                 // Requirement added in 1.17 to fix player glitching between two swimming states
                 // while swimming with feet in air and eyes in water
                 boolean feetInWater = player.getClientVersion().isOlderThan(ClientVersion.V_1_17)
-                        || player.compensatedWorld.getWaterFluidLevelAt(player.lastX, player.lastY, player.lastZ) > 0;
+                        || player.world.getWaterFluidLevelAt(player.lastX, player.lastY, player.lastZ) > 0;
                 player.isSwimming = player.lastSprinting && player.wasEyeInWater && player.wasTouchingWater && feetInWater;
             }
         }
@@ -381,7 +381,7 @@ public final class PlayerBaseTick {
     }
 
     public static void updateInWaterStateAndDoWaterCurrentPushing(GrimPlayer player) {
-        final PacketEntity riding = player.compensatedEntities.getSelf().getRiding();
+        final PacketEntity riding = player.entities.self.getRiding();
         player.wasTouchingWater = updateFluidHeightAndDoFluidPushing(player, FluidTag.WATER, 0.014) && !(riding != null && riding.isBoat());
         if (player.wasTouchingWater)
             player.fallDistance = 0;
@@ -416,9 +416,9 @@ public final class PlayerBaseTick {
                 for (int z = floorZ; z < ceilZ; ++z) {
                     double fluidHeight;
                     if (tag == FluidTag.WATER) {
-                        fluidHeight = player.compensatedWorld.getWaterFluidLevelAt(x, y, z);
+                        fluidHeight = player.world.getWaterFluidLevelAt(x, y, z);
                     } else {
-                        fluidHeight = player.compensatedWorld.getLavaFluidLevelAt(x, y, z);
+                        fluidHeight = player.world.getLavaFluidLevelAt(x, y, z);
                     }
 
                     if (fluidHeight == 0)
@@ -469,9 +469,9 @@ public final class PlayerBaseTick {
 
                     double fluidHeight;
                     if (tag == FluidTag.WATER) {
-                        fluidHeight = player.compensatedWorld.getWaterFluidLevelAt(x, y, z);
+                        fluidHeight = player.world.getWaterFluidLevelAt(x, y, z);
                     } else {
-                        fluidHeight = player.compensatedWorld.getLavaFluidLevelAt(x, y, z);
+                        fluidHeight = player.world.getLavaFluidLevelAt(x, y, z);
                     }
 
                     if (player.getClientVersion().isOlderThan(ClientVersion.V_1_14))
@@ -500,7 +500,7 @@ public final class PlayerBaseTick {
                 vec3 = vec3.multiply(1.0 / n7);
             }
 
-            if (player.compensatedEntities.getSelf().inVehicle()) {
+            if (player.inVehicle()) {
                 // This is a riding entity, normalize it for some reason.
                 vec3 = vec3.normalize();
             }

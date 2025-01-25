@@ -36,7 +36,7 @@ public class PacketPlayerSteer extends PacketListenerAbstract {
             player.vehicleData.nextVehicleForward = forwards;
             player.vehicleData.nextVehicleHorizontal = sideways;
 
-            PacketEntity riding = player.compensatedEntities.getSelf().getRiding();
+            PacketEntity riding = player.entities.self.getRiding();
 
             // Multiple steer vehicles in a row, the player is not in control of their vehicle
             // We must do this SYNC! to netty, as to get the packet location of the vehicle
@@ -44,7 +44,7 @@ public class PacketPlayerSteer extends PacketListenerAbstract {
             if (player.packetStateData.receivedSteerVehicle && riding != null) {
                 // Horse and boat have first passenger in control
                 // If the player is the first passenger, disregard this attempt to have the server control the entity
-                if ((riding.isBoat() || riding instanceof PacketEntityHorse) && riding.passengers.get(0) == player.compensatedEntities.getSelf() &&
+                if ((riding.isBoat() || riding instanceof PacketEntityHorse) && riding.passengers.get(0) == player.entities.self &&
                         // Although if the player has server controlled entities
                         player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9) &&
                         // or the server controls the entities, then this is vanilla logic so allow it
@@ -53,14 +53,14 @@ public class PacketPlayerSteer extends PacketListenerAbstract {
                 }
 
                 // Tick update
-                player.compensatedWorld.tickPlayerInPistonPushingArea();
-                player.compensatedEntities.tick();
+                player.world.tickPlayerInPistonPushingArea();
+                player.entities.tick();
 
                 // Note for the movement check
                 player.vehicleData.lastDummy = true;
 
                 // Update knockback and explosions after getting the vehicle
-                int controllingEntityId = player.compensatedEntities.getSelf().inVehicle() ? player.getRidingVehicleId() : player.entityID;
+                int controllingEntityId = player.inVehicle() ? player.getRidingVehicleId() : player.entityID;
                 player.firstBreadKB = player.checkManager.getKnockbackHandler().calculateFirstBreadKnockback(controllingEntityId, player.lastTransactionReceived.get());
                 player.likelyKB = player.checkManager.getKnockbackHandler().calculateRequiredKB(controllingEntityId, player.lastTransactionReceived.get(), false);
 
@@ -87,14 +87,14 @@ public class PacketPlayerSteer extends PacketListenerAbstract {
                 player.lastY = player.y;
                 player.lastZ = player.z;
 
-                SimpleCollisionBox vehiclePos = player.compensatedEntities.getSelf().getRiding().getPossibleCollisionBoxes();
+                SimpleCollisionBox vehiclePos = player.entities.self.getRiding().getPossibleCollisionBoxes();
 
                 player.x = (vehiclePos.minX + vehiclePos.maxX) / 2;
                 player.y = (vehiclePos.minY + vehiclePos.maxY) / 2;
                 player.z = (vehiclePos.minZ + vehiclePos.maxZ) / 2;
 
                 if (player.isSprinting != player.lastSprinting) {
-                    player.compensatedEntities.hasSprintingAttributeEnabled = player.isSprinting;
+                    player.entities.hasSprintingAttributeEnabled = player.isSprinting;
                 }
                 player.lastSprinting = player.isSprinting;
             }
