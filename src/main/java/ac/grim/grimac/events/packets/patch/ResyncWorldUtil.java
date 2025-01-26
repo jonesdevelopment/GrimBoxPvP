@@ -35,8 +35,8 @@ public class ResyncWorldUtil {
 
     public static void resyncPositions(GrimPlayer player, int minBlockX, int mY, int minBlockZ, int maxBlockX, int mxY, int maxBlockZ) {
         // Check the 4 corners of the player world for loaded chunks before calling event
-        if (!player.world.isChunkLoaded(minBlockX >> 4, minBlockZ >> 4) || !player.world.isChunkLoaded(minBlockX >> 4, maxBlockZ >> 4)
-                || !player.world.isChunkLoaded(maxBlockX >> 4, minBlockZ >> 4) || !player.world.isChunkLoaded(maxBlockX >> 4, maxBlockZ >> 4))
+        if (!player.compensatedWorld.isChunkLoaded(minBlockX >> 4, minBlockZ >> 4) || !player.compensatedWorld.isChunkLoaded(minBlockX >> 4, maxBlockZ >> 4)
+                || !player.compensatedWorld.isChunkLoaded(maxBlockX >> 4, minBlockZ >> 4) || !player.compensatedWorld.isChunkLoaded(maxBlockX >> 4, maxBlockZ >> 4))
             return;
 
         if (player.bukkitPlayer == null) return;
@@ -57,9 +57,9 @@ public class ResyncWorldUtil {
 
             // This is based on Tuinity's code, thanks leaf. Now merged into paper.
             // I have no idea how I could possibly get this more efficient...
-            final int minSection = player.world.getMinHeight() >> 4;
+            final int minSection = player.compensatedWorld.getMinHeight() >> 4;
             final int minBlock = minSection << 4;
-            final int maxBlock = player.world.getMaxHeight() - 1;
+            final int maxBlock = player.compensatedWorld.getMaxHeight() - 1;
 
             int minBlockY = Math.max(minBlock, mY);
             int maxBlockY = Math.min(maxBlock, mxY);
@@ -130,7 +130,7 @@ public class ResyncWorldUtil {
         FoliaScheduler.getRegionScheduler().execute(GrimAPI.INSTANCE.getPlugin(), world, chunkX, chunkZ, () -> {
             if (!player.bukkitPlayer.isOnline() || !player.getSetbackTeleportUtil().hasAcceptedSpawnTeleport) return;
 
-            if (!player.world.isChunkLoaded(chunkX, chunkZ)) return;
+            if (!player.compensatedWorld.isChunkLoaded(chunkX, chunkZ)) return;
             if (player.bukkitPlayer.getLocation().distance(new Location(world, pos.x, pos.y, pos.z)) >= 64) return;
             if (!world.isChunkLoaded(chunkX, chunkZ)) return; // Don't load chunks sync
 

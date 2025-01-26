@@ -51,10 +51,10 @@ public class KnockbackHandler extends Check implements PostPredictionCheck {
 
             // Detect whether this knockback packet affects the player or if it is useless
             // Mojang sends extra useless knockback packets for no apparent reason
-            if (player.entities.serverPlayerVehicle != null && entityId != player.entities.serverPlayerVehicle) {
+            if (player.compensatedEntities.serverPlayerVehicle != null && entityId != player.compensatedEntities.serverPlayerVehicle) {
                 return;
             }
-            if (player.entities.serverPlayerVehicle == null && entityId != player.entityID) {
+            if (player.compensatedEntities.serverPlayerVehicle == null && entityId != player.entityID) {
                 return;
             }
 

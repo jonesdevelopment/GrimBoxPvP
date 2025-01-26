@@ -32,7 +32,7 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
             if (player == null) return;
 
             // The entity does not exist
-            if (!player.entities.entityMap.containsKey(interact.getEntityId()) && !player.entities.serverPositionsMap.containsKey(interact.getEntityId())) {
+            if (!player.compensatedEntities.entityMap.containsKey(interact.getEntityId()) && !player.compensatedEntities.serverPositionsMap.containsKey(interact.getEntityId())) {
                 final BadPacketsW badPacketsW = player.checkManager.getPacketCheck(BadPacketsW.class);
                 if (badPacketsW.flagAndAlert("entityId=" + interact.getEntityId()) && badPacketsW.shouldModifyPackets()) {
                     event.setCancelled(true);
@@ -47,7 +47,7 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                 }
 
                 ItemStack heldItem = player.getInventory().getHeldItem();
-                PacketEntity entity = player.entities.getEntity(interact.getEntityId());
+                PacketEntity entity = player.compensatedEntities.getEntity(interact.getEntityId());
 
                 if (entity != null && (!entity.isLivingEntity() || entity.getType() == EntityTypes.PLAYER)) {
                     int knockbackLevel = player.getClientVersion().isOlderThan(ClientVersion.V_1_21) && heldItem != null
@@ -75,7 +75,7 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                         // 1.9+ players who have attack speed cannot slow themselves twice in one tick because their attack cooldown gets reset on swing.
                         if (player.maxAttackSlow > 0
                                 && PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9)
-                                && player.entities.self.getAttributeValue(Attributes.ATTACK_SPEED) < 16) { // 16 is a reasonable limit
+                                && player.compensatedEntities.self.getAttributeValue(Attributes.ATTACK_SPEED) < 16) { // 16 is a reasonable limit
                             return;
                         }
 

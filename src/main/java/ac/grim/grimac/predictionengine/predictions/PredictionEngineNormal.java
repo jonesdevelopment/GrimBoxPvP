@@ -21,7 +21,7 @@ public class PredictionEngineNormal extends PredictionEngine {
 
     public static void staticVectorEndOfTick(GrimPlayer player, Vector vector) {
         double adjustedY = vector.getY();
-        final OptionalInt levitation = player.entities.getPotionLevelForPlayer(PotionTypes.LEVITATION);
+        final OptionalInt levitation = player.compensatedEntities.getPotionLevelForPlayer(PotionTypes.LEVITATION);
         if (levitation.isPresent()) {
             adjustedY += (0.05 * (levitation.getAsInt() + 1) - vector.getY()) * 0.2;
             // Reset fall distance with levitation
@@ -50,7 +50,7 @@ public class PredictionEngineNormal extends PredictionEngine {
                 // If the player didn't try to jump
                 // And 0.03 didn't affect onGround status
                 // The player cannot jump
-                final OptionalInt jumpBoost = player.entities.getPotionLevelForPlayer(PotionTypes.JUMP_BOOST);
+                final OptionalInt jumpBoost = player.compensatedEntities.getPotionLevelForPlayer(PotionTypes.JUMP_BOOST);
                 if (((jumpBoost.isEmpty() || jumpBoost.getAsInt() >= 0) && player.onGround) || !player.lastOnGround)
                     return;
 
@@ -75,7 +75,7 @@ public class PredictionEngineNormal extends PredictionEngine {
         boolean walkingOnPowderSnow = false;
 
         if (!player.inVehicle() && player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_17) &&
-                player.world.getBlockType(player.x, player.y, player.z) == StateTypes.POWDER_SNOW) {
+                player.compensatedWorld.getBlockType(player.x, player.y, player.z) == StateTypes.POWDER_SNOW) {
             ItemStack boots = player.getInventory().getBoots();
             walkingOnPowderSnow = boots != null && boots.getType() == ItemTypes.LEATHER_BOOTS;
         }
@@ -107,7 +107,7 @@ public class PredictionEngineNormal extends PredictionEngine {
             vector.setY(Math.max(vector.getY(), -0.15F));
 
             // Yes, this uses shifting not crouching
-            if (vector.getY() < 0.0 && !(player.world.getBlockType(player.lastX, player.lastY, player.lastZ) == StateTypes.SCAFFOLDING) && player.isSneaking && !player.isFlying) {
+            if (vector.getY() < 0.0 && !(player.compensatedWorld.getBlockType(player.lastX, player.lastY, player.lastZ) == StateTypes.SCAFFOLDING) && player.isSneaking && !player.isFlying) {
                 vector.setY(0.0);
             }
         }

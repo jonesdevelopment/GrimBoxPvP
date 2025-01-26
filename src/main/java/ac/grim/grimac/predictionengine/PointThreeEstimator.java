@@ -448,7 +448,7 @@ public class PointThreeEstimator {
     }
 
     private double iterateGravity(GrimPlayer player, double y) {
-        final OptionalInt levitation = player.entities.getPotionLevelForPlayer(PotionTypes.LEVITATION);
+        final OptionalInt levitation = player.compensatedEntities.getPotionLevelForPlayer(PotionTypes.LEVITATION);
         if (levitation.isPresent()) {
             // This supports both positive and negative levitation
             y += (0.05 * (levitation.getAsInt() + 1) - y * 0.2);

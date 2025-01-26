@@ -25,12 +25,12 @@ public class BadPacketsR extends Check implements PacketCheck {
             long ms = (player.getPlayerClockAtLeast() - clock) / 1000000L;
             long diff = (System.currentTimeMillis() - lastTransTime);
             if (diff > 2000 && ms > 2000) {
-                if (positions == 0 && clock != 0 && player.gamemode != GameMode.SPECTATOR && !player.entities.self.isDead) {
+                if (positions == 0 && clock != 0 && player.gamemode != GameMode.SPECTATOR && !player.compensatedEntities.self.isDead) {
                     flag("time=" + ms + "ms, " + "lst=" + diff + "ms, positions=" + positions);
                 } else {
                     reward();
                 }
-                player.world.removeInvalidPistonLikeStuff(oldTransId);
+                player.compensatedWorld.removeInvalidPistonLikeStuff(oldTransId);
                 positions = 0;
                 clock = player.getPlayerClockAtLeast();
                 lastTransTime = System.currentTimeMillis();

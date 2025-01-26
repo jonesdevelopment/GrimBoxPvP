@@ -149,13 +149,13 @@ public class DynamicCollisionWall extends DynamicConnecting implements Collision
             boolean up = connectsTo(player, version, x, y, z, BlockFace.UP);
 
             if (!up) {
-                WrappedBlockState currBlock = player.world.getBlock(x, y, z);
+                WrappedBlockState currBlock = player.compensatedWorld.getBlock(x, y, z);
                 StateType currType = currBlock.getType();
 
-                boolean selfNorth = currType == player.world.getBlock(x, y, z + 1).getType();
-                boolean selfSouth = currType == player.world.getBlock(x, y, z - 1).getType();
-                boolean selfWest = currType == player.world.getBlock(x - 1, y, z).getType();
-                boolean selfEast = currType == player.world.getBlock(x + 1, y, z).getType();
+                boolean selfNorth = currType == player.compensatedWorld.getBlock(x, y, z + 1).getType();
+                boolean selfSouth = currType == player.compensatedWorld.getBlock(x, y, z - 1).getType();
+                boolean selfWest = currType == player.compensatedWorld.getBlock(x - 1, y, z).getType();
+                boolean selfEast = currType == player.compensatedWorld.getBlock(x + 1, y, z).getType();
 
                 up = (!selfNorth || !selfSouth || selfWest || selfEast) &&
                         (!selfWest || !selfEast || selfNorth || selfSouth);

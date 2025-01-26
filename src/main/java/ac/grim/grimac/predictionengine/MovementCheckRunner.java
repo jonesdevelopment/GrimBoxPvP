@@ -160,8 +160,8 @@ public class MovementCheckRunner extends Check implements PositionCheck {
             }
         }
 
-        player.world.tickPlayerInPistonPushingArea();
-        player.entities.tick();
+        player.compensatedWorld.tickPlayerInPistonPushingArea();
+        player.compensatedEntities.tick();
 
         // The game's movement is glitchy when switching between vehicles
         // This is due to mojang not telling us where the new vehicle's location is
@@ -178,7 +178,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
             player.clientVelocity.multiply(0.98); // This is vanilla, do not touch
         }
 
-        final PacketEntity riding = player.entities.self.getRiding();
+        final PacketEntity riding = player.compensatedEntities.self.getRiding();
         if (player.vehicleData.wasVehicleSwitch || player.vehicleData.lastDummy) {
             update.setTeleport(true);
 
@@ -238,7 +238,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
         if (player.isInBed) return;
 
         if (!player.inVehicle()) {
-            player.speed = player.entities.self.getAttributeValue(Attributes.MOVEMENT_SPEED);
+            player.speed = player.compensatedEntities.self.getAttributeValue(Attributes.MOVEMENT_SPEED);
             if (player.hasGravity != player.playerEntityHasGravity) {
                 player.pointThreeEstimator.updatePlayerGravity();
             }
@@ -304,7 +304,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
         player.actualMovement = new Vector(player.x - player.lastX, player.y - player.lastY, player.z - player.lastZ);
 
         if (player.isSprinting != player.lastSprinting) {
-            player.entities.hasSprintingAttributeEnabled = player.isSprinting;
+            player.compensatedEntities.hasSprintingAttributeEnabled = player.isSprinting;
         }
 
         boolean oldFlying = player.isFlying;
@@ -334,13 +334,13 @@ public class MovementCheckRunner extends Check implements PositionCheck {
         // Sprinting status itself does not desync, only the attribute as mojang forgot that the server
         // can change the attribute
         if (!player.inVehicle()) {
-            player.speed += player.entities.hasSprintingAttributeEnabled ? player.speed * 0.3f : 0;
+            player.speed += player.compensatedEntities.hasSprintingAttributeEnabled ? player.speed * 0.3f : 0;
         }
 
         boolean clientClaimsRiptide = player.packetStateData.tryingToRiptide;
         if (player.packetStateData.tryingToRiptide) {
             long currentTime = System.currentTimeMillis();
-            boolean isInWater = player.world.isRaining || Collisions.hasMaterial(player, player.boundingBox.copy().expand(0.1f), (block) -> Materials.isWater(CompensatedWorld.blockVersion, block.first()));
+            boolean isInWater = player.compensatedWorld.isRaining || Collisions.hasMaterial(player, player.boundingBox.copy().expand(0.1f), (block) -> Materials.isWater(CompensatedWorld.blockVersion, block.first()));
 
             if (currentTime - player.packetStateData.lastRiptide < 450 || !isInWater) {
                 player.packetStateData.tryingToRiptide = false;
@@ -409,7 +409,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
             player.uncertaintyHandler.lastThirtyMillionHardBorder.reset();
         }
 
-        if (player.isFlying && player.getClientVersion().isOlderThan(ClientVersion.V_1_13) && player.world.containsLiquid(player.boundingBox)) {
+        if (player.isFlying && player.getClientVersion().isOlderThan(ClientVersion.V_1_13) && player.compensatedWorld.containsLiquid(player.boundingBox)) {
             player.uncertaintyHandler.lastUnderwaterFlyingHack.reset();
         }
 
@@ -426,7 +426,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
         boolean wasChecked = false;
 
         // Exempt if the player is dead or is riding a dead entity
-        if (player.entities.self.isDead || (riding != null && riding.isDead)) {
+        if (player.compensatedEntities.self.isDead || (riding != null && riding.isDead)) {
             // Dead players can't cheat, if you find a way how they could, open an issue
             player.predictedVelocity = new VectorData(new Vector(), VectorData.VectorType.Dead);
             player.clientVelocity = new Vector();
@@ -443,8 +443,8 @@ public class MovementCheckRunner extends Check implements PositionCheck {
         } else if (riding == null) {
             wasChecked = true;
 
-            player.depthStriderLevel = (float) player.entities.self.getAttributeValue(Attributes.WATER_MOVEMENT_EFFICIENCY);
-            player.sneakingSpeedMultiplier = (float) player.entities.self.getAttributeValue(Attributes.SNEAKING_SPEED);
+            player.depthStriderLevel = (float) player.compensatedEntities.self.getAttributeValue(Attributes.WATER_MOVEMENT_EFFICIENCY);
+            player.sneakingSpeedMultiplier = (float) player.compensatedEntities.self.getAttributeValue(Attributes.SNEAKING_SPEED);
 
             // This is wrong and the engine was not designed around stuff like this
             player.verticalCollision = false;

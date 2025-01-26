@@ -62,7 +62,7 @@ public enum CollisionData {
     }, StateTypes.VINE, StateTypes.FIRE),
 
     LAVA((player, version, block, x, y, z) -> {
-        if (MovementTickerStrider.isAbove(player) && player.entities.self.getRiding() instanceof PacketEntityStrider) {
+        if (MovementTickerStrider.isAbove(player) && player.compensatedEntities.self.getRiding() instanceof PacketEntityStrider) {
             if (block.getLevel() == 0) {
                 return new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
             }
@@ -633,7 +633,7 @@ public enum CollisionData {
 
     LILYPAD((player, version, data, x, y, z) -> {
         // Boats break lilypads client sided on 1.12- clients.
-        if (player.inVehicle() && player.entities.self.getRiding().isBoat() && version.isOlderThanOrEquals(ClientVersion.V_1_12_2))
+        if (player.inVehicle() && player.compensatedEntities.self.getRiding().isBoat() && version.isOlderThanOrEquals(ClientVersion.V_1_12_2))
             return NoCollisionBox.INSTANCE;
 
         if (version.isOlderThan(ClientVersion.V_1_9))

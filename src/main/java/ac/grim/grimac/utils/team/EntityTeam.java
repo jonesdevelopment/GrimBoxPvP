@@ -34,7 +34,7 @@ public final class EntityTeam {
                 }
 
                 boolean flag = false;
-                for (UserProfile profile : player.entities.profiles.values()) {
+                for (UserProfile profile : player.compensatedEntities.profiles.values()) {
                     if (profile.getName() != null && profile.getName().equals(teamsPlayer)) {
                         teamHandler.addEntityToTeam(profile.getUUID().toString(), this);
                         flag = true;

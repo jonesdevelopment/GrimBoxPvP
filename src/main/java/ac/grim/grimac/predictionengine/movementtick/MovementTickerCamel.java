@@ -11,7 +11,7 @@ public class MovementTickerCamel extends MovementTickerHorse {
 
     @Override
     public float getExtraSpeed() {
-        PacketEntityCamel camel = (PacketEntityCamel) player.entities.self.getRiding();
+        PacketEntityCamel camel = (PacketEntityCamel) player.compensatedEntities.self.getRiding();
 
         // If jumping... speed wouldn't apply after this
         // This engine was not designed for this edge case

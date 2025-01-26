@@ -214,8 +214,8 @@ public class CompensatedWorld {
     }
 
     public boolean isNearHardEntity(SimpleCollisionBox playerBox) {
-        for (PacketEntity entity : player.entities.entityMap.values()) {
-            if ((entity.isBoat() || entity.getType() == EntityTypes.SHULKER) && player.entities.self.getRiding() != entity) {
+        for (PacketEntity entity : player.compensatedEntities.entityMap.values()) {
+            if ((entity.isBoat() || entity.getType() == EntityTypes.SHULKER) && player.compensatedEntities.self.getRiding() != entity) {
                 SimpleCollisionBox box = entity.getPossibleCollisionBoxes();
                 if (box.isIntersected(playerBox)) {
                     return true;
@@ -428,7 +428,7 @@ public class CompensatedWorld {
             if (box.blockPos != null) { // Block is no longer valid
                 return !Materials.isShulker(getBlock(box.blockPos).getType());
             } else { // Entity is no longer valid
-                return !player.entities.entityMap.containsValue(box.entity);
+                return !player.compensatedEntities.entityMap.containsValue(box.entity);
             }
         });
     }

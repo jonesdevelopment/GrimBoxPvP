@@ -15,7 +15,7 @@ public final class PacketEntityEnderDragon extends PacketEntity {
 
     public PacketEntityEnderDragon(GrimPlayer player, UUID uuid, int entityID, double x, double y, double z) {
         super(player, uuid, EntityTypes.ENDER_DRAGON, x, y, z);
-        final Int2ObjectOpenHashMap<PacketEntity> entityMap = player.entities.entityMap;
+        final Int2ObjectOpenHashMap<PacketEntity> entityMap = player.compensatedEntities.entityMap;
         parts.add(new PacketEntityEnderDragonPart(player, DragonPart.HEAD, x, y, z, 1.0F, 1.0F));
         parts.add(new PacketEntityEnderDragonPart(player, DragonPart.NECK, x, y, z, 3.0F, 3.0F));
         parts.add(new PacketEntityEnderDragonPart(player, DragonPart.BODY, x, y, z, 5.0F, 3.0F));

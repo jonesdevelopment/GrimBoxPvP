@@ -22,7 +22,7 @@ import java.util.Set;
 public final class PredictionEngineRideableUtils {
 
     public static Set<VectorData> handleJumps(GrimPlayer player, Set<VectorData> possibleVectors) {
-        if (!(player.entities.self.getRiding() instanceof PacketEntityHorse horse)) return possibleVectors;
+        if (!(player.compensatedEntities.self.getRiding() instanceof PacketEntityHorse horse)) return possibleVectors;
 
         if (horse instanceof PacketEntityCamel camel) {
             handleCamelDash(player, possibleVectors, camel);
@@ -47,7 +47,7 @@ public final class PredictionEngineRideableUtils {
 
         double jumpYVelocity;
 
-        final OptionalInt jumpBoost = player.entities.getPotionLevelForPlayer(PotionTypes.JUMP_BOOST);
+        final OptionalInt jumpBoost = player.compensatedEntities.getPotionLevelForPlayer(PotionTypes.JUMP_BOOST);
         if (jumpBoost.isPresent()) {
             jumpYVelocity = jumpFactor + ((jumpBoost.getAsInt() + 1) * 0.1F);
         } else {
@@ -86,7 +86,7 @@ public final class PredictionEngineRideableUtils {
         // broken ever since vehicle control became client sided
         //
         // But plugins can still send this, so support it anyways
-        final OptionalInt jumpBoost = player.entities.getPotionLevelForPlayer(PotionTypes.JUMP_BOOST);
+        final OptionalInt jumpBoost = player.compensatedEntities.getPotionLevelForPlayer(PotionTypes.JUMP_BOOST);
         if (jumpBoost.isPresent()) {
             jumpVelocity = jumpFactor + ((jumpBoost.getAsInt() + 1) * 0.1F);
         } else {

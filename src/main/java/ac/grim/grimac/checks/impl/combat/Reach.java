@@ -72,13 +72,13 @@ public class Reach extends Check implements PacketCheck {
                 return;
             }
 
-            PacketEntity entity = player.entities.entityMap.get(action.getEntityId());
+            PacketEntity entity = player.compensatedEntities.entityMap.get(action.getEntityId());
             // Stop people from freezing transactions before an entity spawns to bypass reach
             // TODO: implement dragon parts?
             if (entity == null || entity instanceof PacketEntityEnderDragonPart) {
                 // Only cancel if and only if we are tracking this entity
                 // This is because we don't track paintings.
-                if (shouldModifyPackets() && player.entities.serverPositionsMap.containsKey(action.getEntityId())) {
+                if (shouldModifyPackets() && player.compensatedEntities.serverPositionsMap.containsKey(action.getEntityId())) {
                     event.setCancelled(true);
                     player.onPacketCancel();
                 }
@@ -139,13 +139,13 @@ public class Reach extends Check implements PacketCheck {
             if (reachEntity.getType() == EntityTypes.END_CRYSTAL) {
                 targetBox = new SimpleCollisionBox(reachEntity.trackedServerPosition.getPos().subtract(1, 0, 1), reachEntity.trackedServerPosition.getPos().add(1, 2, 1));
             }
-            return ReachUtils.getMinReachToBox(player, targetBox) > player.entities.self.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE);
+            return ReachUtils.getMinReachToBox(player, targetBox) > player.compensatedEntities.self.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE);
         }
     }
 
     private void tickBetterReachCheckWithAngle() {
         for (Int2ObjectMap.Entry<Vector3d> attack : playerAttackQueue.int2ObjectEntrySet()) {
-            PacketEntity reachEntity = player.entities.entityMap.get(attack.getIntKey());
+            PacketEntity reachEntity = player.compensatedEntities.entityMap.get(attack.getIntKey());
             if (reachEntity == null) continue;
 
             CheckResult result = checkReach(reachEntity, attack.getValue(), false);
@@ -208,7 +208,7 @@ public class Reach extends Check implements PacketCheck {
             }
         }
 
-        final double maxReach = player.entities.self.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE);
+        final double maxReach = player.compensatedEntities.self.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE);
         // +3 would be 3 + 3 = 6, which is the pre-1.20.5 behaviour, preventing "Missed Hitbox"
         final double distance = maxReach + 3;
         final double[] possibleEyeHeights = player.getPossibleEyeHeights();

@@ -32,7 +32,7 @@ public class BadPacketsT extends Check implements PacketCheck {
             final WrapperPlayClientInteractEntity wrapper = new WrapperPlayClientInteractEntity(event);
             // Only INTERACT_AT actually has an interaction vector
             wrapper.getTarget().ifPresent(targetVector -> {
-                final PacketEntity packetEntity = player.entities.getEntity(wrapper.getEntityId());
+                final PacketEntity packetEntity = player.compensatedEntities.getEntity(wrapper.getEntityId());
                 // Don't continue if the compensated entity hasn't been resolved
                 if (packetEntity == null) {
                     return;

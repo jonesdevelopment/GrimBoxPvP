@@ -123,7 +123,7 @@ public class CompensatedEntities {
             }
         }
 
-        PacketEntity entity = player.entities.getEntity(entityID);
+        PacketEntity entity = player.compensatedEntities.getEntity(entityID);
         if (entity == null) return;
 
         for (WrapperPlayServerUpdateAttributes.Property snapshotWrapper : objects) {
@@ -205,7 +205,7 @@ public class CompensatedEntities {
     }
 
     public void updateEntityMetadata(int entityID, List<EntityData> watchableObjects) {
-        PacketEntity entity = player.entities.getEntity(entityID);
+        PacketEntity entity = player.compensatedEntities.getEntity(entityID);
         if (entity == null) return;
 
         if (entity.isAgeable()) {
@@ -290,12 +290,12 @@ public class CompensatedEntities {
             if (height != null) {
                 if ((byte) height.getValue() == 0) {
                     ShulkerData data = new ShulkerData(shulker, player.lastTransactionSent.get(), true);
-                    player.world.openShulkerBoxes.remove(data);
-                    player.world.openShulkerBoxes.add(data);
+                    player.compensatedWorld.openShulkerBoxes.remove(data);
+                    player.compensatedWorld.openShulkerBoxes.add(data);
                 } else {
                     ShulkerData data = new ShulkerData(shulker, player.lastTransactionSent.get(), false);
-                    player.world.openShulkerBoxes.remove(data);
-                    player.world.openShulkerBoxes.add(data);
+                    player.compensatedWorld.openShulkerBoxes.remove(data);
+                    player.compensatedWorld.openShulkerBoxes.add(data);
                 }
             }
         }

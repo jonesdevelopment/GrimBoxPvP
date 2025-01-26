@@ -27,7 +27,7 @@ public class BadPacketsM extends Check implements PacketCheck {
 
             final WrapperPlayClientInteractEntity wrapper = new WrapperPlayClientInteractEntity(event);
 
-            final PacketEntity entity = player.entities.entityMap.get(wrapper.getEntityId());
+            final PacketEntity entity = player.compensatedEntities.entityMap.get(wrapper.getEntityId());
 
             // For armor stands, vanilla clients send:
             //  - when renaming the armor stand or in spectator mode: INTERACT_AT + INTERACT

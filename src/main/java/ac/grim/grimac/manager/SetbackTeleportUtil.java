@@ -208,7 +208,7 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
             // Player is in a vehicle
             if (player.inVehicle()) {
                 int vehicleId = player.getRidingVehicleId();
-                if (player.entities.serverPlayerVehicle != null) {
+                if (player.compensatedEntities.serverPlayerVehicle != null) {
                     // Dismount player from vehicle
                     if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9)) {
                         player.user.sendPacket(new WrapperPlayServerSetPassengers(vehicleId, new int[2]));
@@ -376,7 +376,7 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
      * @return Whether the player has loaded the chunk and accepted a teleport to correct movement or not
      */
     public boolean insideUnloadedChunk() {
-        Column column = player.world.getChunk(GrimMath.floor(player.x) >> 4, GrimMath.floor(player.z) >> 4);
+        Column column = player.compensatedWorld.getChunk(GrimMath.floor(player.x) >> 4, GrimMath.floor(player.z) >> 4);
 
         // If true, the player is in an unloaded chunk
         return !player.disableGrim && (column == null || column.transaction() >= player.lastTransactionReceived.get() ||

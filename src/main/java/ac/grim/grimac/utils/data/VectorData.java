@@ -67,39 +67,17 @@ public class VectorData {
 
     public void addVectorType(VectorType type) {
         switch (type) {
-            case Knockback:
-                isKnockback = true;
-                break;
-            case FirstBreadKnockback:
-                firstBreadKb = true;
-                break;
-            case Explosion:
-                isExplosion = true;
-                break;
-            case FirstBreadExplosion:
-                firstBreadExplosion = true;
-                break;
-            case Trident:
-                isTrident = true;
-                break;
-            case ZeroPointZeroThree:
-                isZeroPointZeroThree = true;
-                break;
-            case Swimhop:
-                isSwimHop = true;
-                break;
-            case Flip_Sneaking:
-                isFlipSneaking = true;
-                break;
-            case Flip_Use_Item:
-                isFlipItem = true;
-                break;
-            case Jump:
-                isJump = true;
-                break;
-            case AttackSlow:
-                isAttackSlow = true;
-                break;
+            case Knockback -> isKnockback = true;
+            case FirstBreadKnockback -> firstBreadKb = true;
+            case Explosion -> isExplosion = true;
+            case FirstBreadExplosion -> firstBreadExplosion = true;
+            case Trident -> isTrident = true;
+            case ZeroPointZeroThree -> isZeroPointZeroThree = true;
+            case Swimhop -> isSwimHop = true;
+            case Flip_Sneaking -> isFlipSneaking = true;
+            case Flip_Use_Item -> isFlipItem = true;
+            case Jump -> isJump = true;
+            case AttackSlow -> isAttackSlow = true;
         }
     }
 

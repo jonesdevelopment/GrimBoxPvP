@@ -52,7 +52,7 @@ public class MovementTicker {
 
             final TeamHandler teamHandler = player.checkManager.getPacketCheck(TeamHandler.class);
 
-            for (PacketEntity entity : player.entities.entityMap.values()) {
+            for (PacketEntity entity : player.compensatedEntities.entityMap.values()) {
                 // TODO actually handle entity collisions instead of this awfulness
                 SimpleCollisionBox entityBox = entity.getPossibleCollisionBoxes();
 
@@ -133,7 +133,7 @@ public class MovementTicker {
         player.boundingBox = GetBoundingBox.getCollisionBoxForPlayer(player, player.x, player.y, player.z);
         // This is how the player checks for fall damage
         // By running fluid pushing for the player
-        final PacketEntity riding = player.entities.self.getRiding();
+        final PacketEntity riding = player.compensatedEntities.self.getRiding();
         if (!player.wasTouchingWater && (riding == null || !riding.isBoat())) {
             PlayerBaseTick.updateInWaterStateAndDoWaterCurrentPushing(player);
         }
@@ -338,11 +338,11 @@ public class MovementTicker {
 
     public void livingEntityTravel() {
         double playerGravity = !player.inVehicle()
-                ? player.entities.self.getAttributeValue(Attributes.GRAVITY)
-                : player.entities.self.getRiding().getAttributeValue(Attributes.GRAVITY);
+                ? player.compensatedEntities.self.getAttributeValue(Attributes.GRAVITY)
+                : player.compensatedEntities.self.getRiding().getAttributeValue(Attributes.GRAVITY);
 
         boolean isFalling = player.actualMovement.getY() <= 0.0;
-        if (isFalling && player.entities.getSlowFallingAmplifier().isPresent()) {
+        if (isFalling && player.compensatedEntities.getSlowFallingAmplifier().isPresent()) {
             playerGravity = player.getClientVersion().isOlderThan(ClientVersion.V_1_20_5) ? 0.01 : Math.min(playerGravity, 0.01);
             // Set fall distance to 0 if the player has slow falling
             player.fallDistance = 0;
@@ -354,12 +354,12 @@ public class MovementTicker {
 
         double lavaLevel = 0;
         if (canStandOnLava())
-            lavaLevel = player.world.getLavaFluidLevelAt(GrimMath.floor(player.lastX), GrimMath.floor(player.lastY), GrimMath.floor(player.lastZ));
+            lavaLevel = player.compensatedWorld.getLavaFluidLevelAt(GrimMath.floor(player.lastX), GrimMath.floor(player.lastY), GrimMath.floor(player.lastZ));
 
         if (player.wasTouchingWater && !player.isFlying) {
             // 0.8F seems hardcoded in
             // 1.13+ players on skeleton horses swim faster! Cool feature.
-            boolean isSkeletonHorse = player.inVehicle() && player.entities.self.getRiding().getType() == EntityTypes.SKELETON_HORSE && player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13);
+            boolean isSkeletonHorse = player.inVehicle() && player.compensatedEntities.self.getRiding().getType() == EntityTypes.SKELETON_HORSE && player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13);
             swimFriction = player.isSprinting && player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13) ? 0.9F : (isSkeletonHorse ? 0.96F : 0.8F);
             float swimSpeed = 0.02F;
 
@@ -377,7 +377,7 @@ public class MovementTicker {
                 swimSpeed += (player.speed - swimSpeed) * player.depthStriderLevel / divisor;
             }
 
-            if (player.entities.getPotionLevelForPlayer(PotionTypes.DOLPHINS_GRACE).isPresent()) {
+            if (player.compensatedEntities.getPotionLevelForPlayer(PotionTypes.DOLPHINS_GRACE).isPresent()) {
                 swimFriction = 0.96F;
             }
 

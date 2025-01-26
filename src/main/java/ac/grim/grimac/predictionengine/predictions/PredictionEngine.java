@@ -561,7 +561,7 @@ public class PredictionEngine {
         // We can't simulate the player's Y velocity, unknown number of ticks with a gravity change
         // Feel free to simulate all 104857600000000000000000000 possibilities!
         if (!player.pointThreeEstimator.canPredictNextVerticalMovement()) {
-            minVector.setY(minVector.getY() - player.entities.self.getAttributeValue(Attributes.GRAVITY));
+            minVector.setY(minVector.getY() - player.compensatedEntities.self.getAttributeValue(Attributes.GRAVITY));
         }
 
         // Hidden slime block bounces by missing idle tick and 0.03
@@ -780,7 +780,7 @@ public class PredictionEngine {
 
     public boolean canSwimHop(GrimPlayer player) {
         // Boats cannot swim hop, all other living entities should be able to.
-        if (player.inVehicle() && player.entities.self.getRiding().isBoat())
+        if (player.inVehicle() && player.compensatedEntities.self.getRiding().isBoat())
             return false;
 
         // Vanilla system ->
@@ -808,7 +808,7 @@ public class PredictionEngine {
         SimpleCollisionBox oldBox = player.inVehicle() ? GetBoundingBox.getCollisionBoxForPlayer(player, player.lastX, player.lastY, player.lastZ) :
                 GetBoundingBox.getBoundingBoxFromPosAndSize(player, player.lastX, player.lastY, player.lastZ, 0.6f, 1.8f);
 
-        if (!player.world.containsLiquid(oldBox.expand(0.1, 0.1, 0.1))) return false;
+        if (!player.compensatedWorld.containsLiquid(oldBox.expand(0.1, 0.1, 0.1))) return false;
 
         SimpleCollisionBox oldBB = player.boundingBox;
         player.boundingBox = player.boundingBox.copy().expand(-0.03, 0, -0.03);

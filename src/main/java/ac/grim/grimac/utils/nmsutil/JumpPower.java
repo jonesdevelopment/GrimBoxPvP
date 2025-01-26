@@ -13,7 +13,7 @@ public class JumpPower {
     public static void jumpFromGround(GrimPlayer player, Vector vector) {
         float jumpPower = getJumpPower(player);
 
-        final OptionalInt jumpBoost = player.entities.getPotionLevelForPlayer(PotionTypes.JUMP_BOOST);
+        final OptionalInt jumpBoost = player.compensatedEntities.getPotionLevelForPlayer(PotionTypes.JUMP_BOOST);
         if (jumpBoost.isPresent()) {
             jumpPower += 0.1f * (jumpBoost.getAsInt() + 1);
         }
@@ -29,7 +29,7 @@ public class JumpPower {
     }
 
     public static float getJumpPower(GrimPlayer player) {
-        return (float) player.entities.self.getAttributeValue(Attributes.JUMP_STRENGTH) * getPlayerJumpFactor(player);
+        return (float) player.compensatedEntities.self.getAttributeValue(Attributes.JUMP_STRENGTH) * getPlayerJumpFactor(player);
     }
 
     public static float getPlayerJumpFactor(GrimPlayer player) {

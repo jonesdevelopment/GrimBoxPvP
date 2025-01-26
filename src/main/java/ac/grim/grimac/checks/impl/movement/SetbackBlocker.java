@@ -42,7 +42,7 @@ public class SetbackBlocker extends Check implements PacketCheck {
             }
 
             // Player is dead
-            if (player.entities.self.isDead) {
+            if (player.compensatedEntities.self.isDead) {
                 event.setCancelled(true);
             }
         }
@@ -63,7 +63,7 @@ public class SetbackBlocker extends Check implements PacketCheck {
             }
 
             // Player is dead
-            if (player.entities.self.isDead) {
+            if (player.compensatedEntities.self.isDead) {
                 event.setCancelled(true);
             }
         }

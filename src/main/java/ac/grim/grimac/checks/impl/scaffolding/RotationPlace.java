@@ -104,7 +104,7 @@ public class RotationPlace extends BlockPlaceCheck {
             possibleLookDirs = Collections.singletonList(new Vector3f(player.xRot, player.yRot, 0));
         }
 
-        final double distance = player.entities.self.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
+        final double distance = player.compensatedEntities.self.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
         for (double d : possibleEyeHeights) {
             for (Vector3f lookDir : possibleLookDirs) {
                 // x, y, z are correct for the block placement even after post tick because of code elsewhere

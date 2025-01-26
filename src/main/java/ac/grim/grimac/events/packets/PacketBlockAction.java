@@ -34,19 +34,19 @@ public class PacketBlockAction extends PacketListenerAbstract {
 
             player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> {
                 // The client ignores the state sent to the client.
-                WrappedBlockState existing = player.world.getBlock(blockPos);
+                WrappedBlockState existing = player.compensatedWorld.getBlock(blockPos);
                 if (Materials.isShulker(existing.getType())) {
                     // Param is the number of viewers of the shulker box.
                     // Hashset with .equals() set to be position
                     if (blockAction.getActionData() >= 1) {
                         ShulkerData data = new ShulkerData(blockPos, player.lastTransactionSent.get(), false);
-                        player.world.openShulkerBoxes.remove(data);
-                        player.world.openShulkerBoxes.add(data);
+                        player.compensatedWorld.openShulkerBoxes.remove(data);
+                        player.compensatedWorld.openShulkerBoxes.add(data);
                     } else {
                         // The shulker box is closing
                         ShulkerData data = new ShulkerData(blockPos, player.lastTransactionSent.get(), true);
-                        player.world.openShulkerBoxes.remove(data);
-                        player.world.openShulkerBoxes.add(data);
+                        player.compensatedWorld.openShulkerBoxes.remove(data);
+                        player.compensatedWorld.openShulkerBoxes.add(data);
                     }
                 }
             });
