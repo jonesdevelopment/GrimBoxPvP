@@ -73,7 +73,7 @@ public class PacketPlayerWindow extends PacketListenerAbstract {
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_12_1) &&
                 player.pointThreeEstimator.isNearNetherPortal) {
             // Client ignores nether portal if the player has passengers or is riding an entity
-            return !player.entities.self.inVehicle() && player.entities.self.passengers.isEmpty();
+            return !player.compensatedEntities.self.inVehicle() && player.compensatedEntities.self.passengers.isEmpty();
         }
 
         return false;

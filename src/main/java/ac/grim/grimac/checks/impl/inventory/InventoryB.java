@@ -28,7 +28,7 @@ public class InventoryB extends Check implements PostPredictionCheck {
                 && !player.uncertaintyHandler.lastMovementWasZeroPointZeroThree) {
             final double squaredActualSpeed = player.actualMovement.getX() * player.actualMovement.getX()
                     + player.actualMovement.getZ() * player.actualMovement.getZ();
-            final double movementSpeed = player.entities.self.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
+            final double movementSpeed = player.compensatedEntities.self.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
             final double squaredMovementSpeed = movementSpeed * movementSpeed;
             if (squaredActualSpeed > squaredMovementSpeed) {
                 final double difference = Math.abs(squaredActualSpeed - lastSquaredActualSpeed);
