@@ -55,6 +55,8 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                             : 0;
 
                     boolean isLegacyPlayer = player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8);
+                    // assume cooldown is full on 1.8 servers
+                    boolean noCooldown = isLegacyPlayer || PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9);
 
                     if (!isLegacyPlayer) {
                         knockbackLevel = Math.max(knockbackLevel, 0);
@@ -63,7 +65,7 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                     // 1.8 players who are packet sprinting WILL get slowed
                     // 1.9+ players who are packet sprinting might not, based on attack cooldown
                     // Players with knockback enchantments always get slowed
-                    if (player.lastSprinting && knockbackLevel >= 0 && isLegacyPlayer || knockbackLevel > 0) {
+                    if (player.lastSprinting && knockbackLevel >= 0 && noCooldown || knockbackLevel > 0) {
                         player.minAttackSlow++;
                         player.maxAttackSlow++;
 
@@ -72,7 +74,7 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                             player.maxAttackSlow = player.minAttackSlow = 1;
                         }
                     } else if (!isLegacyPlayer && player.lastSprinting) {
-                        // 1.9+ players who have attack speed cannot slow themselves twice in one tick because their attack cooldown gets reset on swing.
+                        // 1.9+ players who have high attack speed cannot slow themselves twice in one tick because their attack cooldown gets reset on swing.
                         if (player.maxAttackSlow > 0
                                 && PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9)
                                 && player.compensatedEntities.self.getAttributeValue(Attributes.ATTACK_SPEED) < 16) { // 16 is a reasonable limit
